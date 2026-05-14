@@ -84,20 +84,11 @@ class MutualAggregationModule(nn.Module):
     """Mutual Aggregation Module (MAM) for bidirectional support-query interaction"""
     def __init__(self, dim, num_heads=4, dropout=0.1):
         super().__init__()
+        # Keep parameters for compatibility but operate in identity mode
+        # Different support shots don't have point-index correspondence,
+        # so we skip the aggregation that averages across shots
         self.num_heads = num_heads
-        self.attention = nn.MultiheadAttention(embed_dim=dim, num_heads=num_heads, dropout=dropout)
-        self.norm_s = nn.LayerNorm(dim)
-        self.norm_q = nn.LayerNorm(dim)
-        self.ffn_s = nn.Sequential(
-            nn.Linear(dim, dim * 4),
-            nn.ReLU(),
-            nn.Linear(dim * 4, dim)
-        )
-        self.ffn_q = nn.Sequential(
-            nn.Linear(dim, dim * 4),
-            nn.ReLU(),
-            nn.Linear(dim * 4, dim)
-        )
+        self.dim = dim
 
     def forward(self, support_feat, query_feat):
         """
@@ -105,53 +96,44 @@ class MutualAggregationModule(nn.Module):
             support_feat: (n_way, k_shot, C, N)
             query_feat: (B, C, N)
         Returns:
-            enhanced_support_feat: (n_way, k_shot, C, N)
-            enhanced_query_feat: (B, C, N)
+            enhanced_support_feat: (n_way, k_shot, C, N) - unchanged
+            enhanced_query_feat: (B, C, N) - unchanged
+        
+        Note: Operates in safety mode (identity) because different support shots
+        don't have point-index correspondence. Averaging across shots would be invalid.
         """
-        n_way, k_shot, C, N = support_feat.shape
-        B = query_feat.shape[0]
-
-        # Average support over k_shot to get per-way support
-        support_feat_avg = support_feat.mean(dim=1)  # (n_way, C, N)
-
-        # Reshape for multihead attention: (N, n_way, C) and (N, B, C)
-        support_reshaped = support_feat_avg.permute(2, 0, 1)  # (N, n_way, C)
-        query_reshaped = query_feat.permute(2, 0, 1)  # (N, B, C)
-
-        # Compute cross-attention: query attends to support
-        attn_output_q, _ = self.attention(query_reshaped, support_reshaped, support_reshaped)
-        # Compute cross-attention: support attends to query
-        attn_output_s, _ = self.attention(support_reshaped, query_reshaped, query_reshaped)
-
-        # Residual connection and norm
-        query_updated = self.norm_q(query_reshaped + attn_output_q)
-        support_updated = self.norm_s(support_reshaped + attn_output_s)
-
-        # FFN
-        query_updated = self.ffn_q(query_updated)
-        support_updated = self.ffn_s(support_updated)
-
-        # Reshape back
-        enhanced_query_feat = query_updated.permute(1, 2, 0)  # (B, C, N)
-        enhanced_support_feat_avg = support_updated.permute(1, 2, 0)  # (n_way, C, N)
-
-        # Expand back to k_shot
-        enhanced_support_feat = enhanced_support_feat_avg.unsqueeze(1).repeat(1, k_shot, 1, 1)  # (n_way, k_shot, C, N)
-
-        return enhanced_support_feat, enhanced_query_feat
+        # Debug logs
+        if self.training:
+            if not hasattr(self, '_mam_debug_logged') or getattr(self, '_mam_debug_logged', 0) < 3:
+                print('\n=== MAM DEBUG (SAFETY MODE) ===')
+                print(f'MAM support_feat input shape: {support_feat.shape}')
+                print(f'MAM query_feat input shape: {query_feat.shape}')
+                print(f'MAM support_feat output shape: {support_feat.shape}')
+                print(f'MAM query_feat output shape: {query_feat.shape}')
+                print('MAM operating in identity mode (no changes)')
+                print('=== END MAM DEBUG ===')
+                setattr(self, '_mam_debug_logged', getattr(self, '_mam_debug_logged', 0) + 1)
+        
+        # Identity mode - return inputs unchanged
+        return support_feat, query_feat
 
 
 class CommonalityBasedPrototypeSelection(nn.Module):
-    """Commonality-based Prototype Selection (CPS) for semantic purification"""
-    def __init__(self, dim):
+    """Commonality-based Prototype Selection (CPS) for semantic purification
+    
+    Support-only purification: computes similarity between support points and base prototype,
+    then performs conservative residual blending.
+    """
+    def __init__(self, dim, cps_alpha=0.3):
         super().__init__()
         self.dim = dim
+        self.cps_alpha = cps_alpha  # Blending weight for purified prototype
 
     def forward(self, support_feat, query_feat, fg_mask, bg_mask, n_way, k_shot):
         """
         Args:
             support_feat: (n_way, k_shot, C, N)
-            query_feat: (B, C, N)
+            query_feat: (B, C, N) - not used in support-only purification
             fg_mask: (n_way, k_shot, N)
             bg_mask: (n_way, k_shot, N)
             n_way: number of ways
@@ -159,73 +141,101 @@ class CommonalityBasedPrototypeSelection(nn.Module):
         Returns:
             purified_prototypes: list of [bg_prototype] + fg_prototypes
         """
-        # Generate initial prototypes
+        # Generate base prototypes (support-only, no query involved)
         fg_feat = support_feat * fg_mask.unsqueeze(2)
         bg_feat = support_feat * bg_mask.unsqueeze(2)
 
-        fg_prototypes_init = []
+        fg_prototypes_base = []
         for way in range(n_way):
-            sum_val = fg_mask[way].sum() + 1e-5
-            # fg_feat[way] shape: (k_shot, C, N) - 3D tensor
-            # Sum over k_shot (dim=0) and points (dim=2), keep feature dim (dim=1)
+            sum_val = fg_mask[way].sum().clamp_min(1.0)
             fg_proto = fg_feat[way].sum(dim=(0, 2)) / sum_val
-            fg_prototypes_init.append(fg_proto)
+            fg_prototypes_base.append(fg_proto)
 
-        bg_sum = bg_mask.sum() + 1e-5
-        # bg_feat shape: (n_way, k_shot, C, N) - 4D tensor
-        # Sum over n_way (dim=0), k_shot (dim=1), and points (dim=3), keep feature dim (dim=2)
-        bg_prototype_init = bg_feat.sum(dim=(0, 1, 3)) / bg_sum
+        bg_sum = bg_mask.sum().clamp_min(1.0)
+        bg_prototype_base = bg_feat.sum(dim=(0, 1, 3)) / bg_sum
 
-        # Compute commonality maps and purify prototypes
+        # Support-only purification: compute similarity between support points and base prototypes
+        # This avoids invalid query-support point correspondence
         fg_prototypes_purified = []
         for way in range(n_way):
-            # Get query for this way (assuming B = n_way)
-            q_feat = query_feat[way]  # (C, N)
-            # Compute similarity between query and initial prototype
-            # q_feat shape: (C, N), fg_prototypes_init[way].unsqueeze(1) shape: (C, 1)
-            # Compute similarity along feature dim (dim=0)
-            similarity = F.cosine_similarity(q_feat, fg_prototypes_init[way].unsqueeze(1), dim=0)  # (N,)
-            # Normalize similarity to get weights
-            weights = F.softmax(similarity, dim=0)  # (N,)
-            # Apply weights to support features of this way
-            # support_feat[way] shape: (k_shot, C, N), weights shape: (N,)
-            # Unsqueeze weights to (1, 1, N) to broadcast with (k_shot, C, N)
-            weighted_support = support_feat[way] * weights.unsqueeze(0).unsqueeze(1)  # (k_shot, C, N)
-            # Multiply by fg_mask to only consider foreground points
-            weighted_support = weighted_support * fg_mask[way].unsqueeze(1)  # (k_shot, C, N)
+            # Get foreground support features for this way
+            fg_support = support_feat[way] * fg_mask[way].unsqueeze(1)  # [k_shot, C, N]
+            
+            # Compute similarity between support foreground points and base prototype
+            # fg_support: [k_shot, C, N], fg_prototypes_base[way]: [C]
+            similarity = F.cosine_similarity(
+                fg_support, 
+                fg_prototypes_base[way].unsqueeze(0).unsqueeze(-1), 
+                dim=1
+            )  # [k_shot, N]
+            
+            # Use similarity to weight support points (higher similarity = higher weight)
+            # Clamp to avoid extreme weights
+            weights = torch.clamp(similarity, min=0.0)  # [k_shot, N]
+            
+            # Apply weights and mask
+            weighted_fg_support = fg_support * weights.unsqueeze(1)  # [k_shot, C, N]
+            
             # Compute purified prototype
-            sum_val = fg_mask[way].sum() + 1e-5
-            # weighted_support shape: (k_shot, C, N) - 3D tensor
-            # Sum over k_shot (dim=0) and points (dim=2), keep feature dim (dim=1)
-            fg_proto_purified = weighted_support.sum(dim=(0, 2)) / sum_val
-            fg_prototypes_purified.append(fg_proto_purified)
+            sum_val = (weights * fg_mask[way]).sum().clamp_min(1.0)
+            fg_proto_purified = weighted_fg_support.sum(dim=(0, 2)) / sum_val
+            
+            # Residual blending: final = (1-alpha)*base + alpha*purified
+            fg_proto_final = (1 - self.cps_alpha) * fg_prototypes_base[way] + self.cps_alpha * fg_proto_purified
+            fg_prototypes_purified.append(fg_proto_final)
 
-        # Purify background prototype
-        # Average similarity across all queries
-        bg_similarities = []
-        for b in range(query_feat.shape[0]):
-            q_feat = query_feat[b]  # (C, N)
-            # Compute similarity between query and initial prototype
-            # q_feat shape: (C, N), bg_prototype_init.unsqueeze(1) shape: (C, 1)
-            # Compute similarity along feature dim (dim=0)
-            similarity = F.cosine_similarity(q_feat, bg_prototype_init.unsqueeze(1), dim=0)  # (N,)
-            bg_similarities.append(similarity)
-        bg_similarity = torch.stack(bg_similarities).mean(dim=0)  # (N,)
-        bg_weights = F.softmax(bg_similarity, dim=0)  # (N,)
+        # Purify background prototype (support-only)
+        bg_support = support_feat * bg_mask.unsqueeze(2)  # [n_way, k_shot, C, N]
+        
+        # Compute similarity between support background points and base prototype
+        similarity_bg = F.cosine_similarity(
+            bg_support, 
+            bg_prototype_base.unsqueeze(0).unsqueeze(0).unsqueeze(-1), 
+            dim=2
+        )  # [n_way, k_shot, N]
+        
+        weights_bg = torch.clamp(similarity_bg, min=0.0)  # [n_way, k_shot, N]
+        weighted_bg_support = bg_support * weights_bg.unsqueeze(2)  # [n_way, k_shot, C, N]
+        
+        sum_val_bg = (weights_bg * bg_mask).sum().clamp_min(1.0)
+        bg_proto_purified = weighted_bg_support.sum(dim=(0, 1, 3)) / sum_val_bg
+        
+        # Residual blending for background
+        bg_proto_final = (1 - self.cps_alpha) * bg_prototype_base + self.cps_alpha * bg_proto_purified
 
-        # Apply weights to all support features
-        # support_feat shape: (n_way, k_shot, C, N), bg_weights shape: (N,)
-        # Unsqueeze bg_weights to (1, 1, 1, N) to broadcast with (n_way, k_shot, C, N)
-        weighted_support_bg = support_feat * bg_weights.unsqueeze(0).unsqueeze(0).unsqueeze(0)  # (n_way, k_shot, C, N)
-        # Multiply by bg_mask to only consider background points
-        weighted_support_bg = weighted_support_bg * bg_mask.unsqueeze(2)  # (n_way, k_shot, C, N)
-        # Compute purified background prototype
-        # weighted_support_bg shape: (n_way, k_shot, C, N) - 4D tensor
-        # Sum over n_way (dim=0), k_shot (dim=1), and points (dim=3), keep feature dim (dim=2)
-        bg_proto_purified = weighted_support_bg.sum(dim=(0, 1, 3)) / (bg_mask.sum() + 1e-5)
+        # Debug logs
+        if self.training:
+            if not hasattr(self, '_cps_debug_logged') or getattr(self, '_cps_debug_logged', 0) < 3:
+                print('\n=== CPS DEBUG ===')
+                print(f'CPS alpha: {self.cps_alpha}')
+                print(f'Base fg prototype shapes: {[p.shape for p in fg_prototypes_base]}')
+                print(f'Base bg prototype shape: {bg_prototype_base.shape}')
+                
+                # Compute cosine similarities between base and purified
+                print('Cosine similarity between base and purified prototypes:')
+                for way in range(n_way):
+                    sim = F.cosine_similarity(fg_prototypes_base[way], fg_prototypes_purified[way], dim=0)
+                    print(f'  Foreground way {way}: {float(sim.item()):.4f}')
+                bg_sim = F.cosine_similarity(bg_prototype_base, bg_proto_final, dim=0)
+                print(f'  Background: {float(bg_sim.item()):.4f}')
+                
+                # L2 norms
+                print('L2 norms:')
+                for way in range(n_way):
+                    print(f'  FG way {way} - base: {float(fg_prototypes_base[way].norm().item()):.4f}, purified: {float(fg_prototypes_purified[way].norm().item()):.4f}')
+                print(f'  BG - base: {float(bg_prototype_base.norm().item()):.4f}, purified: {float(bg_proto_final.norm().item()):.4f}')
+                
+                # Check for NaN/Inf
+                all_protos = [bg_proto_final] + fg_prototypes_purified
+                has_nan = any(torch.any(torch.isnan(p)).item() for p in all_protos)
+                has_inf = any(torch.any(torch.isinf(p)).item() for p in all_protos)
+                print(f'Prototypes contain NaN: {has_nan}')
+                print(f'Prototypes contain Inf: {has_inf}')
+                print('=== END CPS DEBUG ===')
+                setattr(self, '_cps_debug_logged', getattr(self, '_cps_debug_logged', 0) + 1)
 
         # Combine prototypes
-        purified_prototypes = [bg_proto_purified] + fg_prototypes_purified
+        purified_prototypes = [bg_proto_final] + fg_prototypes_purified
         return purified_prototypes
 
 
@@ -409,16 +419,50 @@ class GPCPR(nn.Module):
         fg_mask = support_y
         bg_mask = torch.logical_not(support_y)
 
+        # Debug logs (first iteration or debug mode)
+        if self.training and (not hasattr(self, '_proto_debug_logged') or getattr(self, '_proto_debug_logged', 0) < 3):
+            print('\n=== PROTOTYPE DEBUG LOG ===')
+            print(f'support_feat shape: {support_feat.shape}')
+            print(f'query_feat shape: {query_feat.shape}')
+            print(f'fg_mask shape: {fg_mask.shape}')
+            print(f'bg_mask shape: {bg_mask.shape}')
+            
+            # Foreground point counts per way/shot
+            fg_counts = fg_mask.sum(dim=-1)  # [n_way, k_shot]
+            print(f'Foreground point counts (way x shot):')
+            for way in range(self.n_way):
+                shot_counts = [int(fg_counts[way, shot].item()) for shot in range(self.k_shot)]
+                print(f'  Way {way}: {shot_counts} (total: {int(fg_counts[way].sum().item())})')
+            
+            # Background point counts per way/shot
+            bg_counts = bg_mask.sum(dim=-1)  # [n_way, k_shot]
+            print(f'Background point counts (way x shot):')
+            for way in range(self.n_way):
+                shot_counts = [int(bg_counts[way, shot].item()) for shot in range(self.k_shot)]
+                print(f'  Way {way}: {shot_counts} (total: {int(bg_counts[way].sum().item())})')
+            
+            setattr(self, '_proto_debug_logged', getattr(self, '_proto_debug_logged', 0) + 1)
+
         # Commonality-based Prototype Selection (CPS)
         if self.use_cps:
             # Apply CPS to purify prototypes
             purified_prototypes = self.cps(support_feat, query_feat, fg_mask, bg_mask, self.n_way, self.k_shot)
             prototypes = torch.stack(purified_prototypes, dim=0)
         else:
-            # Original prototype generation
-            fg_prototypes, bg_prototype = self.getPrototype(self.getMaskedFeatures(support_feat, fg_mask), self.getMaskedFeatures(support_feat, bg_mask))
+            # Use point-count weighted prototype aggregation
+            fg_prototypes, bg_prototype = self.getWeightedPrototype(support_feat, fg_mask, bg_mask)
             prototypes = [bg_prototype] + fg_prototypes
             prototypes = torch.stack(prototypes, dim=0)
+            
+            # Additional debug logs for prototype quality
+            if self.training and getattr(self, '_proto_debug_logged', 0) <= 3:
+                print(f'prototypes shape: {prototypes.shape}')
+                fg_norms = [float(p.norm().item()) for p in fg_prototypes]
+                print('Foreground prototype L2 norms:', [f'{n:.4f}' for n in fg_norms])
+                print(f'Background prototype L2 norm: {float(bg_prototype.norm().item()):.4f}')
+                print(f'prototypes contains NaN: {torch.any(torch.isnan(prototypes)).item()}')
+                print(f'prototypes contains Inf: {torch.any(torch.isinf(prototypes)).item()}')
+                print('=== END PROTOTYPE DEBUG LOG ===')
         # 任务感知的原型引导交叉门控
         # 使用前景原型的平均值作为任务原型（排除背景）
         # 如果存在前景原型则使用前景，否则回退到全部原型
@@ -476,7 +520,10 @@ class GPCPR(nn.Module):
 
         if self.use_transformer:   # QGPA & loss Lseg
             prototypes_all = prototypes.unsqueeze(0).repeat(query_refined.shape[0], 1, 1)  # [2,3,320]
-            support_feat_ = support_feat.mean(1)  # [2, 320, 2048]
+            # Select best support shot per way instead of averaging across shots
+            # (point indices don't correspond across different support point clouds)
+            support_feat_ = self.selectSupportMemory(support_feat, fg_mask)  # [n_way, C, N]
+            print(f'DEBUG: support_memory shape: {support_feat_.shape}')
             prototypes_all_post = self.transformer(query_refined, support_feat_, prototypes_all)
 
             # 注释掉了
@@ -571,26 +618,7 @@ class GPCPR(nn.Module):
         if self.use_align:
             align_loss = align_loss + self.alignLoss_trans(query_refined, query_pred, support_feat, fg_mask, bg_mask)  # 使用refined特征
 
-        # Auxiliary loss for MAM to prevent feature drift
-        mam_loss = 0
-        if self.use_mam:
-            # Compute feature consistency loss between original and enhanced features
-            # This helps prevent the MAM from drifting too far from the original features
-            original_support_feat = support_feat.view(self.n_way * self.k_shot, -1, self.n_points)
-            original_query_feat = query_feat
-            
-            # Get original features (before MAM)
-            if self.use_attention:
-                original_support_feat, _, _ = self.getFeatures(support_x)
-                original_query_feat, _, _ = self.getFeatures(query_x)
-            else:
-                original_support_feat, _ = self.getFeatures(support_x)
-                original_query_feat, _ = self.getFeatures(query_x)
-            
-            original_support_feat = original_support_feat.view(self.n_way, self.k_shot, -1, self.n_points)
-            
-            # Compute L2 loss between original and enhanced features
-            mam_loss = F.mse_loss(support_feat, original_support_feat) + F.mse_loss(query_feat, original_query_feat)
+        # MAM operates in identity mode, so no MAM loss is needed
 
         dd_loss = 0
         if self.use_dd_loss and self.use_pcpr and self.use_transformer:
@@ -610,6 +638,39 @@ class GPCPR(nn.Module):
         total_loss = loss + align_loss + sr_loss * self.sr_weight + dd_loss + mam_loss
         if self.use_boundary_shallow:
             total_loss += boundary_loss * self.lambda_boundary
+
+        # Logits diagnostics (first few iterations)
+        if self.training:
+            if not hasattr(self, '_logits_debug_logged') or getattr(self, '_logits_debug_logged', 0) < 3:
+                print('\n=== LOGITS DIAGNOSTICS ===')
+                print(f'query_pred shape: {query_pred.shape}')
+                print(f'Logits stats - min: {query_pred.min().item():.4f}, max: {query_pred.max().item():.4f}, mean: {query_pred.mean().item():.4f}')
+                
+                # Per-class logits mean
+                if query_pred.dim() >= 2:
+                    for cls in range(query_pred.shape[1]):
+                        cls_mean = query_pred[:, cls].mean().item()
+                        print(f'  Class {cls} logits mean: {cls_mean:.4f}')
+                
+                # Target and prediction analysis
+                if query_y is not None:
+                    target_unique = torch.unique(query_y)
+                    print(f'Target unique values: {sorted([int(v.item()) for v in target_unique])}')
+                    
+                    query_pred_argmax = query_pred.argmax(dim=1)
+                    pred_unique = torch.unique(query_pred_argmax)
+                    print(f'Prediction unique values: {sorted([int(v.item()) for v in pred_unique])}')
+                    
+                    # Check for collapse
+                    if len(pred_unique) == 1:
+                        print(f'WARNING: Predictions collapsed to single class: {int(pred_unique[0].item())}')
+                    if len(pred_unique) == 2 and 0 in [int(v.item()) for v in pred_unique]:
+                        bg_ratio = (query_pred_argmax == 0).float().mean().item()
+                        if bg_ratio > 0.95:
+                            print(f'WARNING: {bg_ratio:.1%} of predictions are background')
+                
+                print('=== END LOGITS DIAGNOSTICS ===')
+                setattr(self, '_logits_debug_logged', getattr(self, '_logits_debug_logged', 0) + 1)
 
         return query_pred, total_loss
 
@@ -752,7 +813,7 @@ class GPCPR(nn.Module):
 
     def getPrototype(self, fg_feat, bg_feat):
         """
-        Average the features to obtain the prototype
+        Average the features to obtain the prototype (original equal-shot averaging)
 
         Args:
             fg_feat: foreground features for each way/shot, shape: (n_way, k_shot, feat_dim)
@@ -763,6 +824,92 @@ class GPCPR(nn.Module):
         """
         fg_prototypes = [fg_feat[way, ...].sum(dim=0) / self.k_shot for way in range(self.n_way)]
         bg_prototype = bg_feat.sum(dim=(0, 1)) / (self.n_way * self.k_shot)
+        return fg_prototypes, bg_prototype
+
+    def selectSupportMemory(self, support_feat, fg_mask):
+        """
+        Select best support shot per way based on foreground point count.
+        Different support shots don't have point-index correspondence,
+        so we select the shot with most foreground points instead of averaging.
+
+        Args:
+            support_feat: support features, shape: (n_way, k_shot, C, N)
+            fg_mask: foreground masks, shape: (n_way, k_shot, N)
+        Returns:
+            support_memory: selected support features, shape: (n_way, C, N)
+        """
+        n_way, k_shot, C, N = support_feat.shape
+        
+        # Count foreground points per way/shot
+        fg_counts = fg_mask.float().sum(dim=-1)  # [n_way, k_shot]
+        
+        # Select best shot index per way
+        best_ids = fg_counts.argmax(dim=1)  # [n_way]
+        
+        # Debug logs
+        if self.training and getattr(self, '_proto_debug_logged', 0) <= 3:
+            print('\n=== SUPPORT MEMORY SELECTION DEBUG ===')
+            print(f'support_feat shape: {support_feat.shape}')
+            print(f'fg_mask shape: {fg_mask.shape}')
+            print(f'Foreground counts (way x shot):')
+            for way in range(n_way):
+                print(f'  Way {way}: {[int(fg_counts[way, s].item()) for s in range(k_shot)]}')
+            print(f'Selected best shot IDs: {[int(best_ids[way].item()) for way in range(n_way)]}')
+            print(f'Selected foreground counts: {[int(fg_counts[way, best_ids[way]].item()) for way in range(n_way)]}')
+            print('=== END SUPPORT MEMORY SELECTION DEBUG ===')
+        
+        # Select best shot for each way
+        support_memory = []
+        for way in range(n_way):
+            best_shot = best_ids[way]
+            support_memory.append(support_feat[way, best_shot])
+        
+        support_memory = torch.stack(support_memory, dim=0)  # [n_way, C, N]
+        
+        return support_memory
+
+    def getWeightedPrototype(self, support_feat, fg_mask, bg_mask):
+        """
+        Compute prototypes using point-count weighted aggregation.
+        Each support shot contributes proportionally to the number of valid points it contains.
+
+        Args:
+            support_feat: support features, shape: (n_way, k_shot, C, N)
+            fg_mask: foreground masks, shape: (n_way, k_shot, N)
+            bg_mask: background masks, shape: (n_way, k_shot, N)
+        Returns:
+            fg_prototypes: list of n_way foreground prototypes, each [C]
+            bg_prototype: background prototype [C]
+        """
+        n_way, k_shot, C, N = support_feat.shape
+        
+        # Compute foreground prototypes (one per way)
+        fg_prototypes = []
+        for way in range(n_way):
+            # Get all foreground points for this way across all shots
+            # support_feat[way]: [k_shot, C, N]
+            # fg_mask[way]: [k_shot, N]
+            fg_mask_expanded = fg_mask[way].unsqueeze(1)  # [k_shot, 1, N]
+            weighted_feat = support_feat[way] * fg_mask_expanded  # [k_shot, C, N]
+            
+            # Sum across shots and points
+            fg_sum = weighted_feat.sum(dim=(0, 2))  # [C]
+            fg_count = fg_mask[way].sum()  # scalar
+            fg_count = fg_count.clamp_min(1.0)  # Avoid division by zero
+            
+            fg_proto = fg_sum / fg_count
+            fg_prototypes.append(fg_proto)
+        
+        # Compute background prototype (all background points across all ways and shots)
+        bg_mask_expanded = bg_mask.unsqueeze(2)  # [n_way, k_shot, 1, N]
+        weighted_bg_feat = support_feat * bg_mask_expanded  # [n_way, k_shot, C, N]
+        
+        bg_sum = weighted_bg_feat.sum(dim=(0, 1, 3))  # [C]
+        bg_count = bg_mask.sum()  # scalar
+        bg_count = bg_count.clamp_min(1.0)  # Avoid division by zero
+        
+        bg_prototype = bg_sum / bg_count
+        
         return fg_prototypes, bg_prototype
 
 

@@ -24,22 +24,141 @@ class GPCPRLearner(object):
 
 
         if mode == 'train':
-            params_dict = [{'params': self.model.encoder.parameters(), 'lr': 0.0001},
-                           {'params': self.model.base_learner.parameters()},
-                           {'params': self.model.att_learner.parameters()}]
+            # Track parameter IDs to prevent duplicates
+            param_ids = set()
+            params_dict = []
+            
+            def add_params(module_name, params, lr=None):
+                """Helper to add parameters to optimizer, preventing duplicates."""
+                if not hasattr(self.model, module_name):
+                    return False
+                module = getattr(self.model, module_name)
+                if module is None:
+                    return False
+                module_params = list(params)
+                if len(module_params) == 0:
+                    return False
+                # Check for duplicates
+                new_params = []
+                for p in module_params:
+                    if id(p) not in param_ids:
+                        param_ids.add(id(p))
+                        new_params.append(p)
+                if len(new_params) > 0:
+                    param_group = {'params': new_params}
+                    if lr is not None:
+                        param_group['lr'] = lr
+                    params_dict.append(param_group)
+                    return True
+                return False
+            
+            # Encoder (with specific LR)
+            add_params('encoder', self.model.encoder.parameters(), lr=0.0001)
+            
+            # Base learner
+            add_params('base_learner', self.model.base_learner.parameters())
+            
+            # Attention learner (used when use_attention=True)
+            if args.use_attention:
+                add_params('att_learner', self.model.att_learner.parameters())
+            else:
+                # Linear mapper (used when use_attention=False)
+                add_params('linear_mapper', self.model.linear_mapper.parameters())
+            
+            # Conv1 (used when use_linear_proj=True)
+            if args.use_linear_proj:
+                add_params('conv_1', self.model.conv_1.parameters())
+            
+            # Transformer (QGPA)
             if args.use_transformer:
-                params_dict.append({'params': self.model.transformer.parameters(), 'lr': args.trans_lr})
+                add_params('transformer', self.model.transformer.parameters(), lr=args.trans_lr)
+            
+            # Text modules
             if args.use_text or args.use_text_diff:
-                params_dict.append({'params': self.model.text_projector.parameters(), 'lr': args.generator_lr})
+                add_params('text_projector', self.model.text_projector.parameters(), lr=args.generator_lr)
             if args.use_text:
-                params_dict.append({'params': self.model.text_compressor.parameters(), 'lr': args.trans_lr})
+                add_params('text_compressor', self.model.text_compressor.parameters(), lr=args.trans_lr)
             if args.use_text_diff:
-                params_dict.append({'params': self.model.text_compressor_diff.parameters(), 'lr': args.trans_lr})
+                add_params('text_compressor_diff', self.model.text_compressor_diff.parameters(), lr=args.trans_lr)
+            
+            # Proto compressor (PCPR)
             if args.use_pcpr:
-                params_dict.append({'params': self.model.proto_compressor.parameters(), 'lr': args.trans_lr})
+                add_params('proto_compressor', self.model.proto_compressor.parameters(), lr=args.trans_lr)
+            
+            # Similarity head (SSM + DSM + fusion)
+            add_params('sim_head', self.model.sim_head.parameters())
+            
+            # Fusion module (PrototypeGuidedGating)
+            add_params('fusion', self.model.fusion.parameters())
+            
+            # Boundary branch
+            if getattr(args, 'use_boundary_shallow', False):
+                add_params('boundary_branch', self.model.boundary_branch.parameters())
+            
+            # MAM (Mutual Aggregation Module)
+            if args.use_mam:
+                add_params('mam', self.model.mam.parameters())
+            
+            # CPS has no trainable parameters, so we don't add it
+            
             self.optimizer = torch.optim.Adam(params_dict, lr=args.lr)
+            
+            # Diagnostic logs
+            print('\n=== OPTIMIZER DIAGNOSTICS ===')
+            total_model_params = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+            total_opt_params = sum(sum(p.numel() for p in pg['params']) for pg in params_dict)
+            
+            print(f'Total trainable parameters in model: {total_model_params:,}')
+            print(f'Total parameters in optimizer: {total_opt_params:,}')
+            print(f'Difference (model - optimizer): {total_model_params - total_opt_params:,}')
+            
+            # Print parameter counts for major modules
+            print('\nParameter counts per module:')
+            for name in ['encoder', 'base_learner', 'att_learner', 'linear_mapper', 'conv_1',
+                         'transformer', 'text_projector', 'text_compressor', 'text_compressor_diff',
+                         'proto_compressor', 'sim_head', 'fusion', 'boundary_branch', 'mam']:
+                if hasattr(self.model, name):
+                    module = getattr(self.model, name)
+                    if module is not None:
+                        count = sum(p.numel() for p in module.parameters() if p.requires_grad)
+                        print(f'  {name}: {count:,}')
+            
+            # Check if CPS has trainable parameters
+            if hasattr(self.model, 'cps') and self.model.cps is not None:
+                cps_params = sum(p.numel() for p in self.model.cps.parameters() if p.requires_grad)
+                print(f'  cps: {cps_params:,} (no trainable parameters by design)')
+            
+            # Warning if there are untrained parameters
+            if total_model_params - total_opt_params > 0:
+                print(f'\nWARNING: {total_model_params - total_opt_params:,} trainable parameters are not in optimizer!')
+                # Find which parameters are not in optimizer
+                opt_param_ids = set()
+                for pg in params_dict:
+                    for p in pg['params']:
+                        opt_param_ids.add(id(p))
+                print('Missing parameters from these modules:')
+                for name, module in self.model.named_modules():
+                    missing_count = 0
+                    for p in module.parameters(recurse=False):
+                        if p.requires_grad and id(p) not in opt_param_ids:
+                            missing_count += p.numel()
+                    if missing_count > 0:
+                        print(f'  {name}: {missing_count:,} missing')
+            print('=== END OPTIMIZER DIAGNOSTICS ===')
             # set learning rate scheduler
             self.lr_scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=args.step_size,gamma=args.gamma)
+            # Print backbone configuration before loading checkpoint
+            print('\n=== BACKBONE CONFIGURATION ===')
+            print(f'backbone_name: {args.backbone_name}')
+            print(f'use_high_dgcnn: {args.use_high_dgcnn}')
+            print(f'dataset: {args.dataset}')
+            print(f'cvfold: {args.cvfold}')
+            print(f'pretrain_checkpoint_path: {args.pretrain_checkpoint_path}')
+            print(f'dgcnn_k: {args.dgcnn_k}')
+            print(f'edgeconv_widths: {args.edgeconv_widths}')
+            print(f'dgcnn_mlp_widths: {args.dgcnn_mlp_widths}')
+            print('=== END BACKBONE CONFIGURATION ===')
+            
             # load pretrained model for point cloud encoding
             if args.pretrain_checkpoint_path:
                 self.model = load_pretrain_checkpoint(self.model, args.pretrain_checkpoint_path)
@@ -169,4 +288,3 @@ class GPCPRLearner(object):
         out = torch.stack(out, dim=0).float()
         out = torch.nn.functional.normalize(out, p=2, dim=-1)
         return out
-
