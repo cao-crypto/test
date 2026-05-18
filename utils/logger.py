@@ -13,6 +13,13 @@ class IOStream():
         self.f.write(text+'\n')
         self.f.flush()
 
+    def fprint(self, text):
+        self.f.write(str(text) + '\n')
+        self.f.flush()
+
+    def debug(self, text):
+        self.fprint(text)
+
     def close(self):
         self.f.close()
 

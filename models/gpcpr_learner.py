@@ -15,10 +15,10 @@ from fvcore.nn import FlopCountAnalysis, parameter_count_table
 
 class GPCPRLearner(object):
 
-    def __init__(self, args, mode='train'):
-
+    def __init__(self, args, mode='train', logger=None):
+        self.logger = logger
         self.model = GPCPR(args)
-        print(self.model)
+        self.log(self.model)
         if torch.cuda.is_available():
             self.model.cuda()
 
@@ -103,17 +103,17 @@ class GPCPRLearner(object):
             
             self.optimizer = torch.optim.Adam(params_dict, lr=args.lr)
             
-            # Diagnostic logs
-            print('\n=== OPTIMIZER DIAGNOSTICS ===')
+            # Diagnostic logs - file only
+            self.debug_log('\n=== OPTIMIZER DIAGNOSTICS ===')
             total_model_params = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
             total_opt_params = sum(sum(p.numel() for p in pg['params']) for pg in params_dict)
             
-            print(f'Total trainable parameters in model: {total_model_params:,}')
-            print(f'Total parameters in optimizer: {total_opt_params:,}')
-            print(f'Difference (model - optimizer): {total_model_params - total_opt_params:,}')
+            self.debug_log(f'Total trainable parameters in model: {total_model_params:,}')
+            self.debug_log(f'Total parameters in optimizer: {total_opt_params:,}')
+            self.debug_log(f'Difference (model - optimizer): {total_model_params - total_opt_params:,}')
             
             # Print parameter counts for major modules
-            print('\nParameter counts per module:')
+            self.debug_log('\nParameter counts per module:')
             for name in ['encoder', 'base_learner', 'att_learner', 'linear_mapper', 'conv_1',
                          'transformer', 'text_projector', 'text_compressor', 'text_compressor_diff',
                          'proto_compressor', 'sim_head', 'fusion', 'boundary_branch', 'mam']:
@@ -121,47 +121,47 @@ class GPCPRLearner(object):
                     module = getattr(self.model, name)
                     if module is not None:
                         count = sum(p.numel() for p in module.parameters() if p.requires_grad)
-                        print(f'  {name}: {count:,}')
+                        self.debug_log(f'  {name}: {count:,}')
             
             # Check if CPS has trainable parameters
             if hasattr(self.model, 'cps') and self.model.cps is not None:
                 cps_params = sum(p.numel() for p in self.model.cps.parameters() if p.requires_grad)
-                print(f'  cps: {cps_params:,} (no trainable parameters by design)')
+                self.debug_log(f'  cps: {cps_params:,} (no trainable parameters by design)')
             
             # Warning if there are untrained parameters
             if total_model_params - total_opt_params > 0:
-                print(f'\nWARNING: {total_model_params - total_opt_params:,} trainable parameters are not in optimizer!')
+                self.debug_log(f'\nWARNING: {total_model_params - total_opt_params:,} trainable parameters are not in optimizer!')
                 # Find which parameters are not in optimizer
                 opt_param_ids = set()
                 for pg in params_dict:
                     for p in pg['params']:
                         opt_param_ids.add(id(p))
-                print('Missing parameters from these modules:')
+                self.debug_log('Missing parameters from these modules:')
                 for name, module in self.model.named_modules():
                     missing_count = 0
                     for p in module.parameters(recurse=False):
                         if p.requires_grad and id(p) not in opt_param_ids:
                             missing_count += p.numel()
                     if missing_count > 0:
-                        print(f'  {name}: {missing_count:,} missing')
-            print('=== END OPTIMIZER DIAGNOSTICS ===')
+                        self.debug_log(f'  {name}: {missing_count:,} missing')
+            self.debug_log('=== END OPTIMIZER DIAGNOSTICS ===')
             # set learning rate scheduler
             self.lr_scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=args.step_size,gamma=args.gamma)
-            # Print backbone configuration before loading checkpoint
-            print('\n=== BACKBONE CONFIGURATION ===')
-            print(f'backbone_name: {args.backbone_name}')
-            print(f'use_high_dgcnn: {args.use_high_dgcnn}')
-            print(f'dataset: {args.dataset}')
-            print(f'cvfold: {args.cvfold}')
-            print(f'pretrain_checkpoint_path: {args.pretrain_checkpoint_path}')
-            print(f'dgcnn_k: {args.dgcnn_k}')
-            print(f'edgeconv_widths: {args.edgeconv_widths}')
-            print(f'dgcnn_mlp_widths: {args.dgcnn_mlp_widths}')
-            print('=== END BACKBONE CONFIGURATION ===')
+            # Backbone configuration - file only
+            self.debug_log('\n=== BACKBONE CONFIGURATION ===')
+            self.debug_log(f'backbone_name: {args.backbone_name}')
+            self.debug_log(f'use_high_dgcnn: {args.use_high_dgcnn}')
+            self.debug_log(f'dataset: {args.dataset}')
+            self.debug_log(f'cvfold: {args.cvfold}')
+            self.debug_log(f'pretrain_checkpoint_path: {args.pretrain_checkpoint_path}')
+            self.debug_log(f'dgcnn_k: {args.dgcnn_k}')
+            self.debug_log(f'edgeconv_widths: {args.edgeconv_widths}')
+            self.debug_log(f'dgcnn_mlp_widths: {args.dgcnn_mlp_widths}')
+            self.debug_log('=== END BACKBONE CONFIGURATION ===')
             
             # load pretrained model for point cloud encoding
             if args.pretrain_checkpoint_path:
-                self.model = load_pretrain_checkpoint(self.model, args.pretrain_checkpoint_path)
+                self.model = load_pretrain_checkpoint(self.model, args.pretrain_checkpoint_path, logger=self.logger)
             # print("#Model parameters: {}".format(sum([x.nelement() for x in self.model.parameters()])))
 
         elif mode == 'test':
@@ -176,7 +176,7 @@ class GPCPRLearner(object):
         # GPCPR add --- Load Text
         self.use_text = args.use_text
         self.use_text_diff = args.use_text_diff
-        print("load {} {}".format(args.dataset, args.embedding_type))
+        self.log("load {} {}".format(args.dataset, args.embedding_type))
         data_embedding_type = {'word2vec': 'glove', 'clip': 'clip_rn50', 'gpt35': 'gpt-3.5-turbo', 'gpt4omini': 'gpt-4o-mini'}
         vec_name = data_embedding_type[args.embedding_type]
         dataName = {'s3dis': 'S3DIS', 'scannet': 'ScanNet'}
@@ -189,7 +189,7 @@ class GPCPRLearner(object):
             if args.embedding_type == 'word2vec' or args.embedding_type == 'clip':
                 self.embeddings = torch.from_numpy(np.load('dataloaders/{}_{}.npy'.format(dataName[args.dataset], vec_name))).unsqueeze(1)
             elif args.embedding_type in ['gpt35','gpt4omini']:
-                print('load text:','gpt_prompts/{}_{}_{}.pth'.format(args.dataset,args.embedding_num,vec_name))
+                self.debug_log('load text: gpt_prompts/{}_{}_{}.pth'.format(args.dataset,args.embedding_num,vec_name))
                 # 修改后
                 loaded_data = torch.load('gpt_prompts/{}_{}_{}.pth'.format(args.dataset, args.embedding_num, vec_name),
                                          map_location='cpu')
@@ -207,8 +207,22 @@ class GPCPRLearner(object):
 
 
         if self.use_text_diff:
-            print('load text_diff:','gpt_prompts/{}_visual_geometry_difference2_{}.pth'.format(args.dataset, vec_name))
+            self.debug_log('load text_diff: gpt_prompts/{}_visual_geometry_difference2_{}.pth'.format(args.dataset, vec_name))
             self.embeddings_diff = torch.load('gpt_prompts/{}_visual_geometry_difference2_{}.pth'.format(args.dataset, vec_name),map_location='cpu')
+
+    def log(self, msg):
+        if self.logger is not None:
+            self.logger.cprint(str(msg))
+        else:
+            print(str(msg))
+
+    def debug_log(self, msg):
+        if self.logger is not None and hasattr(self.logger, 'debug'):
+            self.logger.debug(str(msg))
+        elif self.logger is not None and hasattr(self.logger, 'fprint'):
+            self.logger.fprint(str(msg))
+        else:
+            pass
 
     def train(self, data, sampled_classes):
         """

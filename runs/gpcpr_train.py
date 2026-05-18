@@ -40,7 +40,7 @@ def train(args):
     TRAIN_LOADER = DataLoader(TRAIN_DATASET, batch_size=1, collate_fn=batch_test_task_collate)
     VALID_LOADER = DataLoader(VALID_DATASET, batch_size=1, collate_fn=batch_test_task_collate)
 
-    PL = GPCPRLearner(args)
+    PL = GPCPRLearner(args, logger=logger)
 
 
     WRITER = SummaryWriter(log_dir=args.log_dir)

@@ -1,0 +1,1778 @@
+------------ Options -------------
+backbone_name: dgcnn
+base_widths: [128, 64]
+batch_size: 1
+boundary_knn_k: 5
+cps_alpha: 0.1
+cvfold: 0
+data_path: ./datasets/S3DIS/blocks_bs1_s1
+dataset: s3dis
+dd_ratio1: 0.5
+dd_ratio2: 0.5
+dgcnn_k: 20
+dgcnn_mlp_widths: [512, 256]
+dist_method: euclidean
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+embedding_num: 10
+embedding_type: gpt35
+eval_interval: 2000
+fusion_mode: scalar
+gamma: 0.5
+generator_lr: 0.0001
+gmm_dropout: 0.1
+gmm_weight: 0.1
+k_shot: 1
+lambda_boundary: 0.1
+log_dir: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/S0_N2_K1_Att1
+lr: 0.0005
+model_checkpoint_path: None
+n_episode_test: 100
+n_iters: 60000
+n_queries: 1
+n_way: 2
+n_workers: 16
+noise_dim: 1024
+output_dim: 64
+pc_attribs: xyzrgbXYZ
+pc_augm: False
+pc_augm_color: 0
+pc_augm_jitter: 1
+pc_augm_mirror_prob: 0
+pc_augm_rot: 1
+pc_augm_scale: 0
+pc_augm_shift: 0
+pc_in_dim: 9
+pc_npts: 2048
+phase: gpcprtrain
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+pretrain_gamma: 0.5
+pretrain_lr: 0.001
+pretrain_step_size: 50
+pretrain_weight_decay: 0.0
+save_path: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/
+step_size: 8000
+train_dim: 320
+trans_lr: 5e-05
+use_align: True
+use_attention: True
+use_boundary_shallow: False
+use_channelwise_dynamic_fusion: False
+use_cps: True
+use_dd_loss: True
+use_high_dgcnn: True
+use_linear_proj: False
+use_mam: True
+use_pcpr: True
+use_supervise_prototype: True
+use_text: True
+use_text_diff: True
+use_transformer: True
+-------------- End ----------------
+
+------------ Options -------------
+backbone_name: dgcnn
+base_widths: [128, 64]
+batch_size: 1
+boundary_knn_k: 5
+cps_alpha: 0.1
+cvfold: 0
+data_path: ./datasets/S3DIS/blocks_bs1_s1
+dataset: s3dis
+dd_ratio1: 0.5
+dd_ratio2: 0.5
+debug_log_first_n: 3
+debug_log_interval: 500
+dgcnn_k: 20
+dgcnn_mlp_widths: [512, 256]
+dist_method: euclidean
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+embedding_num: 10
+embedding_type: gpt35
+enable_debug_logs: False
+eval_interval: 2000
+fusion_mode: scalar
+gamma: 0.5
+generator_lr: 0.0001
+gmm_dropout: 0.1
+gmm_weight: 0.1
+k_shot: 1
+lambda_boundary: 0.1
+log_dir: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/S0_N2_K1_Att1
+lr: 0.0005
+model_checkpoint_path: None
+n_episode_test: 100
+n_iters: 60000
+n_queries: 1
+n_way: 2
+n_workers: 16
+noise_dim: 1024
+output_dim: 64
+pc_attribs: xyzrgbXYZ
+pc_augm: False
+pc_augm_color: 0
+pc_augm_jitter: 1
+pc_augm_mirror_prob: 0
+pc_augm_rot: 1
+pc_augm_scale: 0
+pc_augm_shift: 0
+pc_in_dim: 9
+pc_npts: 2048
+phase: gpcprtrain
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+pretrain_gamma: 0.5
+pretrain_lr: 0.001
+pretrain_step_size: 50
+pretrain_weight_decay: 0.0
+save_path: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/
+step_size: 8000
+train_dim: 320
+trans_lr: 5e-05
+use_align: True
+use_attention: True
+use_boundary_shallow: False
+use_channelwise_dynamic_fusion: False
+use_cps: True
+use_dd_loss: True
+use_high_dgcnn: True
+use_linear_proj: False
+use_mam: True
+use_pcpr: True
+use_supervise_prototype: True
+use_text: True
+use_text_diff: True
+use_transformer: True
+-------------- End ----------------
+
+GPCPR(
+  (encoder): DGCNNAdapter(
+    (backbone): DGCNN_semseg(
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn5): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn6): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn7): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn8): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv1): Sequential(
+        (0): Conv2d(18, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv2): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv3): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv4): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv5): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv6): Sequential(
+        (0): Conv1d(192, 256, kernel_size=(1,), stride=(1,), bias=False)
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+    )
+  )
+  (base_learner): BaseLearner(
+    (convs): ModuleList(
+      (0): Sequential(
+        (0): Conv1d(256, 128, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (1): Sequential(
+        (0): Conv1d(128, 64, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+  )
+  (att_learner): SelfAttention(
+    (q_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (transformer): QGPA(
+    (layer_norm): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+    (q_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (fc): Conv1d(320, 320, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (text_projector): ProjectorNetwork(
+    (model): Sequential(
+      (0): Linear(in_features=1024, out_features=320, bias=True)
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+      (2): Dropout(p=0.1, inplace=False)
+      (3): Linear(in_features=320, out_features=320, bias=True)
+    )
+  )
+  (text_compressor): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (text_compressor_diff): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (proto_compressor): MultiHeadAttention(
+    (q_map): Linear(in_features=320, out_features=320, bias=True)
+    (k_map): Linear(in_features=320, out_features=320, bias=True)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (dropout): Dropout(p=0.5, inplace=False)
+  )
+  (sim_head): ModuleDict(
+    (ssm): ShallowSimilarityHead(
+      (mha): MultiheadAttention(
+        (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+      )
+      (proj_drop): Dropout(p=0.0, inplace=False)
+    )
+    (dsm): DeepSimilarityHead(
+      (encoder): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+          (1): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (fusion): LogitsFusion()
+  )
+  (fusion): PrototypeGuidedGating(
+    (proto_align): Sequential(
+      (0): Linear(in_features=320, out_features=64, bias=True)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+    (gate_gen): Sequential(
+      (0): Conv1d(64, 64, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): Sigmoid()
+    )
+    (fusion): Sequential(
+      (0): Conv1d(384, 320, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(320, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+  )
+  (mam): MutualAggregationModule()
+  (cps): CommonalityBasedPrototypeSelection()
+)
+
+=== OPTIMIZER DIAGNOSTICS ===
+Total trainable parameters in model: 7,057,028
+Total parameters in optimizer: 7,057,028
+Difference (model - optimizer): 0
+
+Parameter counts per module:
+  encoder: 77,568
+  base_learner: 41,536
+  att_learner: 49,152
+  transformer: 2,302,912
+  text_projector: 430,720
+  text_compressor: 410,880
+  text_compressor_diff: 410,880
+  proto_compressor: 308,160
+  sim_head: 2,876,803
+  fusion: 148,417
+  mam: 0
+  cps: 0 (no trainable parameters by design)
+=== END OPTIMIZER DIAGNOSTICS ===
+
+=== BACKBONE CONFIGURATION ===
+backbone_name: dgcnn
+use_high_dgcnn: True
+dataset: s3dis
+cvfold: 0
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+dgcnn_k: 20
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+dgcnn_mlp_widths: [512, 256]
+=== END BACKBONE CONFIGURATION ===
+
+=== CHECKPOINT DIAGNOSTICS ===
+Loading encoder module from pretrained checkpoint: ./log_s3dis/pretrain_S0
+
+[Stats] Raw checkpoint keys: 76
+[Stats] Model encoder keys: 76
+
+[Raw Checkpoint Keys] First 50:
+   1. bn1.weight
+   2. bn1.bias
+   3. bn1.running_mean
+   4. bn1.running_var
+   5. bn1.num_batches_tracked
+   6. bn2.weight
+   7. bn2.bias
+   8. bn2.running_mean
+   9. bn2.running_var
+  10. bn2.num_batches_tracked
+  11. bn3.weight
+  12. bn3.bias
+  13. bn3.running_mean
+  14. bn3.running_var
+  15. bn3.num_batches_tracked
+  16. bn4.weight
+  17. bn4.bias
+  18. bn4.running_mean
+  19. bn4.running_var
+  20. bn4.num_batches_tracked
+  21. bn5.weight
+  22. bn5.bias
+  23. bn5.running_mean
+  24. bn5.running_var
+  25. bn5.num_batches_tracked
+  26. bn6.weight
+  27. bn6.bias
+  28. bn6.running_mean
+  29. bn6.running_var
+  30. bn6.num_batches_tracked
+  31. bn7.weight
+  32. bn7.bias
+  33. bn7.running_mean
+  34. bn7.running_var
+  35. bn7.num_batches_tracked
+  36. bn8.weight
+  37. bn8.bias
+  38. bn8.running_mean
+  39. bn8.running_var
+  40. bn8.num_batches_tracked
+  41. conv1.0.weight
+  42. conv1.1.weight
+  43. conv1.1.bias
+  44. conv1.1.running_mean
+  45. conv1.1.running_var
+  46. conv1.1.num_batches_tracked
+  47. conv2.0.weight
+  48. conv2.1.weight
+  49. conv2.1.bias
+  50. conv2.1.running_mean
+  ... and 26 more
+
+[Model Encoder Keys] First 50:
+   1. encoder.backbone.bn1.weight
+   2. encoder.backbone.bn1.bias
+   3. encoder.backbone.bn1.running_mean
+   4. encoder.backbone.bn1.running_var
+   5. encoder.backbone.bn1.num_batches_tracked
+   6. encoder.backbone.bn2.weight
+   7. encoder.backbone.bn2.bias
+   8. encoder.backbone.bn2.running_mean
+   9. encoder.backbone.bn2.running_var
+  10. encoder.backbone.bn2.num_batches_tracked
+  11. encoder.backbone.bn3.weight
+  12. encoder.backbone.bn3.bias
+  13. encoder.backbone.bn3.running_mean
+  14. encoder.backbone.bn3.running_var
+  15. encoder.backbone.bn3.num_batches_tracked
+  16. encoder.backbone.bn4.weight
+  17. encoder.backbone.bn4.bias
+  18. encoder.backbone.bn4.running_mean
+  19. encoder.backbone.bn4.running_var
+  20. encoder.backbone.bn4.num_batches_tracked
+  21. encoder.backbone.bn5.weight
+  22. encoder.backbone.bn5.bias
+  23. encoder.backbone.bn5.running_mean
+  24. encoder.backbone.bn5.running_var
+  25. encoder.backbone.bn5.num_batches_tracked
+  26. encoder.backbone.bn6.weight
+  27. encoder.backbone.bn6.bias
+  28. encoder.backbone.bn6.running_mean
+  29. encoder.backbone.bn6.running_var
+  30. encoder.backbone.bn6.num_batches_tracked
+  31. encoder.backbone.bn7.weight
+  32. encoder.backbone.bn7.bias
+  33. encoder.backbone.bn7.running_mean
+  34. encoder.backbone.bn7.running_var
+  35. encoder.backbone.bn7.num_batches_tracked
+  36. encoder.backbone.bn8.weight
+  37. encoder.backbone.bn8.bias
+  38. encoder.backbone.bn8.running_mean
+  39. encoder.backbone.bn8.running_var
+  40. encoder.backbone.bn8.num_batches_tracked
+  41. encoder.backbone.conv1.0.weight
+  42. encoder.backbone.conv1.1.weight
+  43. encoder.backbone.conv1.1.bias
+  44. encoder.backbone.conv1.1.running_mean
+  45. encoder.backbone.conv1.1.running_var
+  46. encoder.backbone.conv1.1.num_batches_tracked
+  47. encoder.backbone.conv2.0.weight
+  48. encoder.backbone.conv2.1.weight
+  49. encoder.backbone.conv2.1.bias
+  50. encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Matched Keys] 76 matched:
+  Raw key -> Model key:
+   1. bn1.weight -> encoder.backbone.bn1.weight
+   2. bn1.bias -> encoder.backbone.bn1.bias
+   3. bn1.running_mean -> encoder.backbone.bn1.running_mean
+   4. bn1.running_var -> encoder.backbone.bn1.running_var
+   5. bn1.num_batches_tracked -> encoder.backbone.bn1.num_batches_tracked
+   6. bn2.weight -> encoder.backbone.bn2.weight
+   7. bn2.bias -> encoder.backbone.bn2.bias
+   8. bn2.running_mean -> encoder.backbone.bn2.running_mean
+   9. bn2.running_var -> encoder.backbone.bn2.running_var
+  10. bn2.num_batches_tracked -> encoder.backbone.bn2.num_batches_tracked
+  11. bn3.weight -> encoder.backbone.bn3.weight
+  12. bn3.bias -> encoder.backbone.bn3.bias
+  13. bn3.running_mean -> encoder.backbone.bn3.running_mean
+  14. bn3.running_var -> encoder.backbone.bn3.running_var
+  15. bn3.num_batches_tracked -> encoder.backbone.bn3.num_batches_tracked
+  16. bn4.weight -> encoder.backbone.bn4.weight
+  17. bn4.bias -> encoder.backbone.bn4.bias
+  18. bn4.running_mean -> encoder.backbone.bn4.running_mean
+  19. bn4.running_var -> encoder.backbone.bn4.running_var
+  20. bn4.num_batches_tracked -> encoder.backbone.bn4.num_batches_tracked
+  21. bn5.weight -> encoder.backbone.bn5.weight
+  22. bn5.bias -> encoder.backbone.bn5.bias
+  23. bn5.running_mean -> encoder.backbone.bn5.running_mean
+  24. bn5.running_var -> encoder.backbone.bn5.running_var
+  25. bn5.num_batches_tracked -> encoder.backbone.bn5.num_batches_tracked
+  26. bn6.weight -> encoder.backbone.bn6.weight
+  27. bn6.bias -> encoder.backbone.bn6.bias
+  28. bn6.running_mean -> encoder.backbone.bn6.running_mean
+  29. bn6.running_var -> encoder.backbone.bn6.running_var
+  30. bn6.num_batches_tracked -> encoder.backbone.bn6.num_batches_tracked
+  31. bn7.weight -> encoder.backbone.bn7.weight
+  32. bn7.bias -> encoder.backbone.bn7.bias
+  33. bn7.running_mean -> encoder.backbone.bn7.running_mean
+  34. bn7.running_var -> encoder.backbone.bn7.running_var
+  35. bn7.num_batches_tracked -> encoder.backbone.bn7.num_batches_tracked
+  36. bn8.weight -> encoder.backbone.bn8.weight
+  37. bn8.bias -> encoder.backbone.bn8.bias
+  38. bn8.running_mean -> encoder.backbone.bn8.running_mean
+  39. bn8.running_var -> encoder.backbone.bn8.running_var
+  40. bn8.num_batches_tracked -> encoder.backbone.bn8.num_batches_tracked
+  41. conv1.0.weight -> encoder.backbone.conv1.0.weight
+  42. conv1.1.weight -> encoder.backbone.conv1.1.weight
+  43. conv1.1.bias -> encoder.backbone.conv1.1.bias
+  44. conv1.1.running_mean -> encoder.backbone.conv1.1.running_mean
+  45. conv1.1.running_var -> encoder.backbone.conv1.1.running_var
+  46. conv1.1.num_batches_tracked -> encoder.backbone.conv1.1.num_batches_tracked
+  47. conv2.0.weight -> encoder.backbone.conv2.0.weight
+  48. conv2.1.weight -> encoder.backbone.conv2.1.weight
+  49. conv2.1.bias -> encoder.backbone.conv2.1.bias
+  50. conv2.1.running_mean -> encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Loading Ratio] 1.0000 (76/76)
+
+[SUCCESS] Pretrained encoder weights loaded successfully!
+=== END CHECKPOINT DIAGNOSTICS ===
+
+load s3dis gpt35
+------------ Options -------------
+backbone_name: dgcnn
+base_widths: [128, 64]
+batch_size: 1
+boundary_knn_k: 5
+cps_alpha: 0.1
+cvfold: 0
+data_path: ./datasets/S3DIS/blocks_bs1_s1
+dataset: s3dis
+dd_ratio1: 0.5
+dd_ratio2: 0.5
+debug_log_first_n: 3
+debug_log_interval: 500
+dgcnn_k: 20
+dgcnn_mlp_widths: [512, 256]
+dist_method: euclidean
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+embedding_num: 10
+embedding_type: gpt35
+enable_debug_logs: False
+eval_interval: 2000
+fusion_mode: scalar
+gamma: 0.5
+generator_lr: 0.0001
+gmm_dropout: 0.1
+gmm_weight: 0.1
+k_shot: 1
+lambda_boundary: 0.1
+log_dir: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/S0_N2_K1_Att1
+lr: 0.0005
+model_checkpoint_path: None
+n_episode_test: 100
+n_iters: 60000
+n_queries: 1
+n_way: 2
+n_workers: 16
+noise_dim: 1024
+output_dim: 64
+pc_attribs: xyzrgbXYZ
+pc_augm: False
+pc_augm_color: 0
+pc_augm_jitter: 1
+pc_augm_mirror_prob: 0
+pc_augm_rot: 1
+pc_augm_scale: 0
+pc_augm_shift: 0
+pc_in_dim: 9
+pc_npts: 2048
+phase: gpcprtrain
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+pretrain_gamma: 0.5
+pretrain_lr: 0.001
+pretrain_step_size: 50
+pretrain_weight_decay: 0.0
+save_path: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/
+step_size: 8000
+train_dim: 320
+trans_lr: 5e-05
+use_align: True
+use_attention: True
+use_boundary_shallow: False
+use_channelwise_dynamic_fusion: False
+use_cps: True
+use_dd_loss: True
+use_high_dgcnn: True
+use_linear_proj: False
+use_mam: True
+use_pcpr: True
+use_supervise_prototype: True
+use_text: True
+use_text_diff: True
+use_transformer: True
+-------------- End ----------------
+
+GPCPR(
+  (encoder): DGCNNAdapter(
+    (backbone): DGCNN_semseg(
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn5): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn6): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn7): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn8): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv1): Sequential(
+        (0): Conv2d(18, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv2): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv3): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv4): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv5): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv6): Sequential(
+        (0): Conv1d(192, 256, kernel_size=(1,), stride=(1,), bias=False)
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+    )
+  )
+  (base_learner): BaseLearner(
+    (convs): ModuleList(
+      (0): Sequential(
+        (0): Conv1d(256, 128, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (1): Sequential(
+        (0): Conv1d(128, 64, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+  )
+  (att_learner): SelfAttention(
+    (q_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (transformer): QGPA(
+    (layer_norm): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+    (q_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (fc): Conv1d(320, 320, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (text_projector): ProjectorNetwork(
+    (model): Sequential(
+      (0): Linear(in_features=1024, out_features=320, bias=True)
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+      (2): Dropout(p=0.1, inplace=False)
+      (3): Linear(in_features=320, out_features=320, bias=True)
+    )
+  )
+  (text_compressor): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (text_compressor_diff): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (proto_compressor): MultiHeadAttention(
+    (q_map): Linear(in_features=320, out_features=320, bias=True)
+    (k_map): Linear(in_features=320, out_features=320, bias=True)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (dropout): Dropout(p=0.5, inplace=False)
+  )
+  (sim_head): ModuleDict(
+    (ssm): ShallowSimilarityHead(
+      (mha): MultiheadAttention(
+        (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+      )
+      (proj_drop): Dropout(p=0.0, inplace=False)
+    )
+    (dsm): DeepSimilarityHead(
+      (encoder): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+          (1): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (fusion): LogitsFusion()
+  )
+  (fusion): PrototypeGuidedGating(
+    (proto_align): Sequential(
+      (0): Linear(in_features=320, out_features=64, bias=True)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+    (gate_gen): Sequential(
+      (0): Conv1d(64, 64, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): Sigmoid()
+    )
+    (fusion): Sequential(
+      (0): Conv1d(384, 320, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(320, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+  )
+  (mam): MutualAggregationModule()
+  (cps): CommonalityBasedPrototypeSelection()
+)
+
+=== OPTIMIZER DIAGNOSTICS ===
+Total trainable parameters in model: 7,057,028
+Total parameters in optimizer: 7,057,028
+Difference (model - optimizer): 0
+
+Parameter counts per module:
+  encoder: 77,568
+  base_learner: 41,536
+  att_learner: 49,152
+  transformer: 2,302,912
+  text_projector: 430,720
+  text_compressor: 410,880
+  text_compressor_diff: 410,880
+  proto_compressor: 308,160
+  sim_head: 2,876,803
+  fusion: 148,417
+  mam: 0
+  cps: 0 (no trainable parameters by design)
+=== END OPTIMIZER DIAGNOSTICS ===
+
+=== BACKBONE CONFIGURATION ===
+backbone_name: dgcnn
+use_high_dgcnn: True
+dataset: s3dis
+cvfold: 0
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+dgcnn_k: 20
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+dgcnn_mlp_widths: [512, 256]
+=== END BACKBONE CONFIGURATION ===
+
+=== CHECKPOINT DIAGNOSTICS ===
+Loading encoder module from pretrained checkpoint: ./log_s3dis/pretrain_S0
+
+[Stats] Raw checkpoint keys: 76
+[Stats] Model encoder keys: 76
+
+[Raw Checkpoint Keys] First 50:
+   1. bn1.weight
+   2. bn1.bias
+   3. bn1.running_mean
+   4. bn1.running_var
+   5. bn1.num_batches_tracked
+   6. bn2.weight
+   7. bn2.bias
+   8. bn2.running_mean
+   9. bn2.running_var
+  10. bn2.num_batches_tracked
+  11. bn3.weight
+  12. bn3.bias
+  13. bn3.running_mean
+  14. bn3.running_var
+  15. bn3.num_batches_tracked
+  16. bn4.weight
+  17. bn4.bias
+  18. bn4.running_mean
+  19. bn4.running_var
+  20. bn4.num_batches_tracked
+  21. bn5.weight
+  22. bn5.bias
+  23. bn5.running_mean
+  24. bn5.running_var
+  25. bn5.num_batches_tracked
+  26. bn6.weight
+  27. bn6.bias
+  28. bn6.running_mean
+  29. bn6.running_var
+  30. bn6.num_batches_tracked
+  31. bn7.weight
+  32. bn7.bias
+  33. bn7.running_mean
+  34. bn7.running_var
+  35. bn7.num_batches_tracked
+  36. bn8.weight
+  37. bn8.bias
+  38. bn8.running_mean
+  39. bn8.running_var
+  40. bn8.num_batches_tracked
+  41. conv1.0.weight
+  42. conv1.1.weight
+  43. conv1.1.bias
+  44. conv1.1.running_mean
+  45. conv1.1.running_var
+  46. conv1.1.num_batches_tracked
+  47. conv2.0.weight
+  48. conv2.1.weight
+  49. conv2.1.bias
+  50. conv2.1.running_mean
+  ... and 26 more
+
+[Model Encoder Keys] First 50:
+   1. encoder.backbone.bn1.weight
+   2. encoder.backbone.bn1.bias
+   3. encoder.backbone.bn1.running_mean
+   4. encoder.backbone.bn1.running_var
+   5. encoder.backbone.bn1.num_batches_tracked
+   6. encoder.backbone.bn2.weight
+   7. encoder.backbone.bn2.bias
+   8. encoder.backbone.bn2.running_mean
+   9. encoder.backbone.bn2.running_var
+  10. encoder.backbone.bn2.num_batches_tracked
+  11. encoder.backbone.bn3.weight
+  12. encoder.backbone.bn3.bias
+  13. encoder.backbone.bn3.running_mean
+  14. encoder.backbone.bn3.running_var
+  15. encoder.backbone.bn3.num_batches_tracked
+  16. encoder.backbone.bn4.weight
+  17. encoder.backbone.bn4.bias
+  18. encoder.backbone.bn4.running_mean
+  19. encoder.backbone.bn4.running_var
+  20. encoder.backbone.bn4.num_batches_tracked
+  21. encoder.backbone.bn5.weight
+  22. encoder.backbone.bn5.bias
+  23. encoder.backbone.bn5.running_mean
+  24. encoder.backbone.bn5.running_var
+  25. encoder.backbone.bn5.num_batches_tracked
+  26. encoder.backbone.bn6.weight
+  27. encoder.backbone.bn6.bias
+  28. encoder.backbone.bn6.running_mean
+  29. encoder.backbone.bn6.running_var
+  30. encoder.backbone.bn6.num_batches_tracked
+  31. encoder.backbone.bn7.weight
+  32. encoder.backbone.bn7.bias
+  33. encoder.backbone.bn7.running_mean
+  34. encoder.backbone.bn7.running_var
+  35. encoder.backbone.bn7.num_batches_tracked
+  36. encoder.backbone.bn8.weight
+  37. encoder.backbone.bn8.bias
+  38. encoder.backbone.bn8.running_mean
+  39. encoder.backbone.bn8.running_var
+  40. encoder.backbone.bn8.num_batches_tracked
+  41. encoder.backbone.conv1.0.weight
+  42. encoder.backbone.conv1.1.weight
+  43. encoder.backbone.conv1.1.bias
+  44. encoder.backbone.conv1.1.running_mean
+  45. encoder.backbone.conv1.1.running_var
+  46. encoder.backbone.conv1.1.num_batches_tracked
+  47. encoder.backbone.conv2.0.weight
+  48. encoder.backbone.conv2.1.weight
+  49. encoder.backbone.conv2.1.bias
+  50. encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Matched Keys] 76 matched:
+  Raw key -> Model key:
+   1. bn1.weight -> encoder.backbone.bn1.weight
+   2. bn1.bias -> encoder.backbone.bn1.bias
+   3. bn1.running_mean -> encoder.backbone.bn1.running_mean
+   4. bn1.running_var -> encoder.backbone.bn1.running_var
+   5. bn1.num_batches_tracked -> encoder.backbone.bn1.num_batches_tracked
+   6. bn2.weight -> encoder.backbone.bn2.weight
+   7. bn2.bias -> encoder.backbone.bn2.bias
+   8. bn2.running_mean -> encoder.backbone.bn2.running_mean
+   9. bn2.running_var -> encoder.backbone.bn2.running_var
+  10. bn2.num_batches_tracked -> encoder.backbone.bn2.num_batches_tracked
+  11. bn3.weight -> encoder.backbone.bn3.weight
+  12. bn3.bias -> encoder.backbone.bn3.bias
+  13. bn3.running_mean -> encoder.backbone.bn3.running_mean
+  14. bn3.running_var -> encoder.backbone.bn3.running_var
+  15. bn3.num_batches_tracked -> encoder.backbone.bn3.num_batches_tracked
+  16. bn4.weight -> encoder.backbone.bn4.weight
+  17. bn4.bias -> encoder.backbone.bn4.bias
+  18. bn4.running_mean -> encoder.backbone.bn4.running_mean
+  19. bn4.running_var -> encoder.backbone.bn4.running_var
+  20. bn4.num_batches_tracked -> encoder.backbone.bn4.num_batches_tracked
+  21. bn5.weight -> encoder.backbone.bn5.weight
+  22. bn5.bias -> encoder.backbone.bn5.bias
+  23. bn5.running_mean -> encoder.backbone.bn5.running_mean
+  24. bn5.running_var -> encoder.backbone.bn5.running_var
+  25. bn5.num_batches_tracked -> encoder.backbone.bn5.num_batches_tracked
+  26. bn6.weight -> encoder.backbone.bn6.weight
+  27. bn6.bias -> encoder.backbone.bn6.bias
+  28. bn6.running_mean -> encoder.backbone.bn6.running_mean
+  29. bn6.running_var -> encoder.backbone.bn6.running_var
+  30. bn6.num_batches_tracked -> encoder.backbone.bn6.num_batches_tracked
+  31. bn7.weight -> encoder.backbone.bn7.weight
+  32. bn7.bias -> encoder.backbone.bn7.bias
+  33. bn7.running_mean -> encoder.backbone.bn7.running_mean
+  34. bn7.running_var -> encoder.backbone.bn7.running_var
+  35. bn7.num_batches_tracked -> encoder.backbone.bn7.num_batches_tracked
+  36. bn8.weight -> encoder.backbone.bn8.weight
+  37. bn8.bias -> encoder.backbone.bn8.bias
+  38. bn8.running_mean -> encoder.backbone.bn8.running_mean
+  39. bn8.running_var -> encoder.backbone.bn8.running_var
+  40. bn8.num_batches_tracked -> encoder.backbone.bn8.num_batches_tracked
+  41. conv1.0.weight -> encoder.backbone.conv1.0.weight
+  42. conv1.1.weight -> encoder.backbone.conv1.1.weight
+  43. conv1.1.bias -> encoder.backbone.conv1.1.bias
+  44. conv1.1.running_mean -> encoder.backbone.conv1.1.running_mean
+  45. conv1.1.running_var -> encoder.backbone.conv1.1.running_var
+  46. conv1.1.num_batches_tracked -> encoder.backbone.conv1.1.num_batches_tracked
+  47. conv2.0.weight -> encoder.backbone.conv2.0.weight
+  48. conv2.1.weight -> encoder.backbone.conv2.1.weight
+  49. conv2.1.bias -> encoder.backbone.conv2.1.bias
+  50. conv2.1.running_mean -> encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Loading Ratio] 1.0000 (76/76)
+
+[SUCCESS] Pretrained encoder weights loaded successfully!
+=== END CHECKPOINT DIAGNOSTICS ===
+
+load s3dis gpt35
+------------ Options -------------
+backbone_name: dgcnn
+base_widths: [128, 64]
+batch_size: 1
+boundary_knn_k: 5
+cps_alpha: 0.1
+cvfold: 0
+data_path: ./datasets/S3DIS/blocks_bs1_s1
+dataset: s3dis
+dd_ratio1: 0.5
+dd_ratio2: 0.5
+debug_log_first_n: 3
+debug_log_interval: 500
+dgcnn_k: 20
+dgcnn_mlp_widths: [512, 256]
+dist_method: euclidean
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+embedding_num: 10
+embedding_type: gpt35
+enable_debug_logs: False
+eval_interval: 2000
+fusion_mode: scalar
+gamma: 0.5
+generator_lr: 0.0001
+gmm_dropout: 0.1
+gmm_weight: 0.1
+k_shot: 1
+lambda_boundary: 0.1
+log_dir: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/S0_N2_K1_Att1
+lr: 0.0005
+model_checkpoint_path: None
+n_episode_test: 100
+n_iters: 60000
+n_queries: 1
+n_way: 2
+n_workers: 16
+noise_dim: 1024
+output_dim: 64
+pc_attribs: xyzrgbXYZ
+pc_augm: False
+pc_augm_color: 0
+pc_augm_jitter: 1
+pc_augm_mirror_prob: 0
+pc_augm_rot: 1
+pc_augm_scale: 0
+pc_augm_shift: 0
+pc_in_dim: 9
+pc_npts: 2048
+phase: gpcprtrain
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+pretrain_gamma: 0.5
+pretrain_lr: 0.001
+pretrain_step_size: 50
+pretrain_weight_decay: 0.0
+save_path: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/
+step_size: 8000
+train_dim: 320
+trans_lr: 5e-05
+use_align: True
+use_attention: True
+use_boundary_shallow: False
+use_channelwise_dynamic_fusion: False
+use_cps: True
+use_dd_loss: True
+use_high_dgcnn: True
+use_linear_proj: False
+use_mam: True
+use_pcpr: True
+use_supervise_prototype: True
+use_text: True
+use_text_diff: True
+use_transformer: True
+-------------- End ----------------
+
+GPCPR(
+  (encoder): DGCNNAdapter(
+    (backbone): DGCNN_semseg(
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn5): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn6): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn7): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn8): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv1): Sequential(
+        (0): Conv2d(18, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv2): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv3): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv4): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv5): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv6): Sequential(
+        (0): Conv1d(192, 256, kernel_size=(1,), stride=(1,), bias=False)
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+    )
+  )
+  (base_learner): BaseLearner(
+    (convs): ModuleList(
+      (0): Sequential(
+        (0): Conv1d(256, 128, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (1): Sequential(
+        (0): Conv1d(128, 64, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+  )
+  (att_learner): SelfAttention(
+    (q_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (transformer): QGPA(
+    (layer_norm): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+    (q_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (fc): Conv1d(320, 320, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (text_projector): ProjectorNetwork(
+    (model): Sequential(
+      (0): Linear(in_features=1024, out_features=320, bias=True)
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+      (2): Dropout(p=0.1, inplace=False)
+      (3): Linear(in_features=320, out_features=320, bias=True)
+    )
+  )
+  (text_compressor): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (text_compressor_diff): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (proto_compressor): MultiHeadAttention(
+    (q_map): Linear(in_features=320, out_features=320, bias=True)
+    (k_map): Linear(in_features=320, out_features=320, bias=True)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (dropout): Dropout(p=0.5, inplace=False)
+  )
+  (sim_head): ModuleDict(
+    (ssm): ShallowSimilarityHead(
+      (mha): MultiheadAttention(
+        (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+      )
+      (proj_drop): Dropout(p=0.0, inplace=False)
+    )
+    (dsm): DeepSimilarityHead(
+      (encoder): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+          (1): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (fusion): LogitsFusion()
+  )
+  (fusion): PrototypeGuidedGating(
+    (proto_align): Sequential(
+      (0): Linear(in_features=320, out_features=64, bias=True)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+    (gate_gen): Sequential(
+      (0): Conv1d(64, 64, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): Sigmoid()
+    )
+    (fusion): Sequential(
+      (0): Conv1d(384, 320, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(320, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+  )
+  (mam): MutualAggregationModule()
+  (cps): CommonalityBasedPrototypeSelection()
+)
+
+=== OPTIMIZER DIAGNOSTICS ===
+Total trainable parameters in model: 7,057,028
+Total parameters in optimizer: 7,057,028
+Difference (model - optimizer): 0
+
+Parameter counts per module:
+  encoder: 77,568
+  base_learner: 41,536
+  att_learner: 49,152
+  transformer: 2,302,912
+  text_projector: 430,720
+  text_compressor: 410,880
+  text_compressor_diff: 410,880
+  proto_compressor: 308,160
+  sim_head: 2,876,803
+  fusion: 148,417
+  mam: 0
+  cps: 0 (no trainable parameters by design)
+=== END OPTIMIZER DIAGNOSTICS ===
+
+=== BACKBONE CONFIGURATION ===
+backbone_name: dgcnn
+use_high_dgcnn: True
+dataset: s3dis
+cvfold: 0
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+dgcnn_k: 20
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+dgcnn_mlp_widths: [512, 256]
+=== END BACKBONE CONFIGURATION ===
+
+=== CHECKPOINT DIAGNOSTICS ===
+Loading encoder module from pretrained checkpoint: ./log_s3dis/pretrain_S0
+
+[Stats] Raw checkpoint keys: 76
+[Stats] Model encoder keys: 76
+
+[Raw Checkpoint Keys] First 50:
+   1. bn1.weight
+   2. bn1.bias
+   3. bn1.running_mean
+   4. bn1.running_var
+   5. bn1.num_batches_tracked
+   6. bn2.weight
+   7. bn2.bias
+   8. bn2.running_mean
+   9. bn2.running_var
+  10. bn2.num_batches_tracked
+  11. bn3.weight
+  12. bn3.bias
+  13. bn3.running_mean
+  14. bn3.running_var
+  15. bn3.num_batches_tracked
+  16. bn4.weight
+  17. bn4.bias
+  18. bn4.running_mean
+  19. bn4.running_var
+  20. bn4.num_batches_tracked
+  21. bn5.weight
+  22. bn5.bias
+  23. bn5.running_mean
+  24. bn5.running_var
+  25. bn5.num_batches_tracked
+  26. bn6.weight
+  27. bn6.bias
+  28. bn6.running_mean
+  29. bn6.running_var
+  30. bn6.num_batches_tracked
+  31. bn7.weight
+  32. bn7.bias
+  33. bn7.running_mean
+  34. bn7.running_var
+  35. bn7.num_batches_tracked
+  36. bn8.weight
+  37. bn8.bias
+  38. bn8.running_mean
+  39. bn8.running_var
+  40. bn8.num_batches_tracked
+  41. conv1.0.weight
+  42. conv1.1.weight
+  43. conv1.1.bias
+  44. conv1.1.running_mean
+  45. conv1.1.running_var
+  46. conv1.1.num_batches_tracked
+  47. conv2.0.weight
+  48. conv2.1.weight
+  49. conv2.1.bias
+  50. conv2.1.running_mean
+  ... and 26 more
+
+[Model Encoder Keys] First 50:
+   1. encoder.backbone.bn1.weight
+   2. encoder.backbone.bn1.bias
+   3. encoder.backbone.bn1.running_mean
+   4. encoder.backbone.bn1.running_var
+   5. encoder.backbone.bn1.num_batches_tracked
+   6. encoder.backbone.bn2.weight
+   7. encoder.backbone.bn2.bias
+   8. encoder.backbone.bn2.running_mean
+   9. encoder.backbone.bn2.running_var
+  10. encoder.backbone.bn2.num_batches_tracked
+  11. encoder.backbone.bn3.weight
+  12. encoder.backbone.bn3.bias
+  13. encoder.backbone.bn3.running_mean
+  14. encoder.backbone.bn3.running_var
+  15. encoder.backbone.bn3.num_batches_tracked
+  16. encoder.backbone.bn4.weight
+  17. encoder.backbone.bn4.bias
+  18. encoder.backbone.bn4.running_mean
+  19. encoder.backbone.bn4.running_var
+  20. encoder.backbone.bn4.num_batches_tracked
+  21. encoder.backbone.bn5.weight
+  22. encoder.backbone.bn5.bias
+  23. encoder.backbone.bn5.running_mean
+  24. encoder.backbone.bn5.running_var
+  25. encoder.backbone.bn5.num_batches_tracked
+  26. encoder.backbone.bn6.weight
+  27. encoder.backbone.bn6.bias
+  28. encoder.backbone.bn6.running_mean
+  29. encoder.backbone.bn6.running_var
+  30. encoder.backbone.bn6.num_batches_tracked
+  31. encoder.backbone.bn7.weight
+  32. encoder.backbone.bn7.bias
+  33. encoder.backbone.bn7.running_mean
+  34. encoder.backbone.bn7.running_var
+  35. encoder.backbone.bn7.num_batches_tracked
+  36. encoder.backbone.bn8.weight
+  37. encoder.backbone.bn8.bias
+  38. encoder.backbone.bn8.running_mean
+  39. encoder.backbone.bn8.running_var
+  40. encoder.backbone.bn8.num_batches_tracked
+  41. encoder.backbone.conv1.0.weight
+  42. encoder.backbone.conv1.1.weight
+  43. encoder.backbone.conv1.1.bias
+  44. encoder.backbone.conv1.1.running_mean
+  45. encoder.backbone.conv1.1.running_var
+  46. encoder.backbone.conv1.1.num_batches_tracked
+  47. encoder.backbone.conv2.0.weight
+  48. encoder.backbone.conv2.1.weight
+  49. encoder.backbone.conv2.1.bias
+  50. encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Matched Keys] 76 matched:
+  Raw key -> Model key:
+   1. bn1.weight -> encoder.backbone.bn1.weight
+   2. bn1.bias -> encoder.backbone.bn1.bias
+   3. bn1.running_mean -> encoder.backbone.bn1.running_mean
+   4. bn1.running_var -> encoder.backbone.bn1.running_var
+   5. bn1.num_batches_tracked -> encoder.backbone.bn1.num_batches_tracked
+   6. bn2.weight -> encoder.backbone.bn2.weight
+   7. bn2.bias -> encoder.backbone.bn2.bias
+   8. bn2.running_mean -> encoder.backbone.bn2.running_mean
+   9. bn2.running_var -> encoder.backbone.bn2.running_var
+  10. bn2.num_batches_tracked -> encoder.backbone.bn2.num_batches_tracked
+  11. bn3.weight -> encoder.backbone.bn3.weight
+  12. bn3.bias -> encoder.backbone.bn3.bias
+  13. bn3.running_mean -> encoder.backbone.bn3.running_mean
+  14. bn3.running_var -> encoder.backbone.bn3.running_var
+  15. bn3.num_batches_tracked -> encoder.backbone.bn3.num_batches_tracked
+  16. bn4.weight -> encoder.backbone.bn4.weight
+  17. bn4.bias -> encoder.backbone.bn4.bias
+  18. bn4.running_mean -> encoder.backbone.bn4.running_mean
+  19. bn4.running_var -> encoder.backbone.bn4.running_var
+  20. bn4.num_batches_tracked -> encoder.backbone.bn4.num_batches_tracked
+  21. bn5.weight -> encoder.backbone.bn5.weight
+  22. bn5.bias -> encoder.backbone.bn5.bias
+  23. bn5.running_mean -> encoder.backbone.bn5.running_mean
+  24. bn5.running_var -> encoder.backbone.bn5.running_var
+  25. bn5.num_batches_tracked -> encoder.backbone.bn5.num_batches_tracked
+  26. bn6.weight -> encoder.backbone.bn6.weight
+  27. bn6.bias -> encoder.backbone.bn6.bias
+  28. bn6.running_mean -> encoder.backbone.bn6.running_mean
+  29. bn6.running_var -> encoder.backbone.bn6.running_var
+  30. bn6.num_batches_tracked -> encoder.backbone.bn6.num_batches_tracked
+  31. bn7.weight -> encoder.backbone.bn7.weight
+  32. bn7.bias -> encoder.backbone.bn7.bias
+  33. bn7.running_mean -> encoder.backbone.bn7.running_mean
+  34. bn7.running_var -> encoder.backbone.bn7.running_var
+  35. bn7.num_batches_tracked -> encoder.backbone.bn7.num_batches_tracked
+  36. bn8.weight -> encoder.backbone.bn8.weight
+  37. bn8.bias -> encoder.backbone.bn8.bias
+  38. bn8.running_mean -> encoder.backbone.bn8.running_mean
+  39. bn8.running_var -> encoder.backbone.bn8.running_var
+  40. bn8.num_batches_tracked -> encoder.backbone.bn8.num_batches_tracked
+  41. conv1.0.weight -> encoder.backbone.conv1.0.weight
+  42. conv1.1.weight -> encoder.backbone.conv1.1.weight
+  43. conv1.1.bias -> encoder.backbone.conv1.1.bias
+  44. conv1.1.running_mean -> encoder.backbone.conv1.1.running_mean
+  45. conv1.1.running_var -> encoder.backbone.conv1.1.running_var
+  46. conv1.1.num_batches_tracked -> encoder.backbone.conv1.1.num_batches_tracked
+  47. conv2.0.weight -> encoder.backbone.conv2.0.weight
+  48. conv2.1.weight -> encoder.backbone.conv2.1.weight
+  49. conv2.1.bias -> encoder.backbone.conv2.1.bias
+  50. conv2.1.running_mean -> encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Loading Ratio] 1.0000 (76/76)
+
+[SUCCESS] Pretrained encoder weights loaded successfully!
+=== END CHECKPOINT DIAGNOSTICS ===
+
+load s3dis gpt35
+load text: gpt_prompts/s3dis_10_gpt-3.5-turbo.pth
+------------ Options -------------
+backbone_name: dgcnn
+base_widths: [128, 64]
+batch_size: 1
+boundary_knn_k: 5
+cps_alpha: 0.1
+cvfold: 0
+data_path: ./datasets/S3DIS/blocks_bs1_s1
+dataset: s3dis
+dd_ratio1: 0.5
+dd_ratio2: 0.5
+debug_log_first_n: 3
+debug_log_interval: 500
+dgcnn_k: 20
+dgcnn_mlp_widths: [512, 256]
+dist_method: euclidean
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+embedding_num: 10
+embedding_type: gpt35
+enable_debug_logs: False
+eval_interval: 2000
+fusion_mode: scalar
+gamma: 0.5
+generator_lr: 0.0001
+gmm_dropout: 0.1
+gmm_weight: 0.1
+k_shot: 1
+lambda_boundary: 0.1
+log_dir: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/S0_N2_K1_Att1
+lr: 0.0005
+model_checkpoint_path: None
+n_episode_test: 100
+n_iters: 60000
+n_queries: 1
+n_way: 2
+n_workers: 16
+noise_dim: 1024
+output_dim: 64
+pc_attribs: xyzrgbXYZ
+pc_augm: False
+pc_augm_color: 0
+pc_augm_jitter: 1
+pc_augm_mirror_prob: 0
+pc_augm_rot: 1
+pc_augm_scale: 0
+pc_augm_shift: 0
+pc_in_dim: 9
+pc_npts: 2048
+phase: gpcprtrain
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+pretrain_gamma: 0.5
+pretrain_lr: 0.001
+pretrain_step_size: 50
+pretrain_weight_decay: 0.0
+save_path: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/
+step_size: 8000
+train_dim: 320
+trans_lr: 5e-05
+use_align: True
+use_attention: True
+use_boundary_shallow: False
+use_channelwise_dynamic_fusion: False
+use_cps: True
+use_dd_loss: True
+use_high_dgcnn: True
+use_linear_proj: False
+use_mam: True
+use_pcpr: True
+use_supervise_prototype: True
+use_text: True
+use_text_diff: True
+use_transformer: True
+-------------- End ----------------
+
+GPCPR(
+  (encoder): DGCNNAdapter(
+    (backbone): DGCNN_semseg(
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn3): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn5): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn6): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn7): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (bn8): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (conv1): Sequential(
+        (0): Conv2d(18, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv2): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv3): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv4): Sequential(
+        (0): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv5): Sequential(
+        (0): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+      (conv6): Sequential(
+        (0): Conv1d(192, 256, kernel_size=(1,), stride=(1,), bias=False)
+        (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (2): LeakyReLU(negative_slope=0.2)
+      )
+    )
+  )
+  (base_learner): BaseLearner(
+    (convs): ModuleList(
+      (0): Sequential(
+        (0): Conv1d(256, 128, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (1): Sequential(
+        (0): Conv1d(128, 64, kernel_size=(1,), stride=(1,))
+        (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+  )
+  (att_learner): SelfAttention(
+    (q_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Conv1d(256, 64, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (transformer): QGPA(
+    (layer_norm): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+    (q_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (k_map): Conv1d(2048, 512, kernel_size=(1,), stride=(1,), bias=False)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (fc): Conv1d(320, 320, kernel_size=(1,), stride=(1,), bias=False)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (text_projector): ProjectorNetwork(
+    (model): Sequential(
+      (0): Linear(in_features=1024, out_features=320, bias=True)
+      (1): LeakyReLU(negative_slope=0.2, inplace=True)
+      (2): Dropout(p=0.1, inplace=False)
+      (3): Linear(in_features=320, out_features=320, bias=True)
+    )
+  )
+  (text_compressor): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (text_compressor_diff): MultiheadAttention(
+    (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+  )
+  (proto_compressor): MultiHeadAttention(
+    (q_map): Linear(in_features=320, out_features=320, bias=True)
+    (k_map): Linear(in_features=320, out_features=320, bias=True)
+    (v_map): Linear(in_features=320, out_features=320, bias=True)
+    (dropout): Dropout(p=0.5, inplace=False)
+  )
+  (sim_head): ModuleDict(
+    (ssm): ShallowSimilarityHead(
+      (mha): MultiheadAttention(
+        (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+      )
+      (proj_drop): Dropout(p=0.0, inplace=False)
+    )
+    (dsm): DeepSimilarityHead(
+      (encoder): TransformerEncoder(
+        (layers): ModuleList(
+          (0): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+          (1): TransformerEncoderLayer(
+            (self_attn): MultiheadAttention(
+              (out_proj): _LinearWithBias(in_features=320, out_features=320, bias=True)
+            )
+            (linear1): Linear(in_features=320, out_features=1280, bias=True)
+            (dropout): Dropout(p=0.0, inplace=False)
+            (linear2): Linear(in_features=1280, out_features=320, bias=True)
+            (norm1): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (norm2): LayerNorm((320,), eps=1e-05, elementwise_affine=True)
+            (dropout1): Dropout(p=0.0, inplace=False)
+            (dropout2): Dropout(p=0.0, inplace=False)
+          )
+        )
+      )
+    )
+    (fusion): LogitsFusion()
+  )
+  (fusion): PrototypeGuidedGating(
+    (proto_align): Sequential(
+      (0): Linear(in_features=320, out_features=64, bias=True)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+    (gate_gen): Sequential(
+      (0): Conv1d(64, 64, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): Sigmoid()
+    )
+    (fusion): Sequential(
+      (0): Conv1d(384, 320, kernel_size=(1,), stride=(1,), bias=False)
+      (1): BatchNorm1d(320, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.2)
+    )
+  )
+  (mam): MutualAggregationModule()
+  (cps): CommonalityBasedPrototypeSelection()
+)
+
+=== OPTIMIZER DIAGNOSTICS ===
+Total trainable parameters in model: 7,057,028
+Total parameters in optimizer: 7,057,028
+Difference (model - optimizer): 0
+
+Parameter counts per module:
+  encoder: 77,568
+  base_learner: 41,536
+  att_learner: 49,152
+  transformer: 2,302,912
+  text_projector: 430,720
+  text_compressor: 410,880
+  text_compressor_diff: 410,880
+  proto_compressor: 308,160
+  sim_head: 2,876,803
+  fusion: 148,417
+  mam: 0
+  cps: 0 (no trainable parameters by design)
+=== END OPTIMIZER DIAGNOSTICS ===
+
+=== BACKBONE CONFIGURATION ===
+backbone_name: dgcnn
+use_high_dgcnn: True
+dataset: s3dis
+cvfold: 0
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S0
+dgcnn_k: 20
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+dgcnn_mlp_widths: [512, 256]
+=== END BACKBONE CONFIGURATION ===
+
+=== CHECKPOINT DIAGNOSTICS ===
+Loading encoder module from pretrained checkpoint: ./log_s3dis/pretrain_S0
+
+[Stats] Raw checkpoint keys: 76
+[Stats] Model encoder keys: 76
+
+[Raw Checkpoint Keys] First 50:
+   1. bn1.weight
+   2. bn1.bias
+   3. bn1.running_mean
+   4. bn1.running_var
+   5. bn1.num_batches_tracked
+   6. bn2.weight
+   7. bn2.bias
+   8. bn2.running_mean
+   9. bn2.running_var
+  10. bn2.num_batches_tracked
+  11. bn3.weight
+  12. bn3.bias
+  13. bn3.running_mean
+  14. bn3.running_var
+  15. bn3.num_batches_tracked
+  16. bn4.weight
+  17. bn4.bias
+  18. bn4.running_mean
+  19. bn4.running_var
+  20. bn4.num_batches_tracked
+  21. bn5.weight
+  22. bn5.bias
+  23. bn5.running_mean
+  24. bn5.running_var
+  25. bn5.num_batches_tracked
+  26. bn6.weight
+  27. bn6.bias
+  28. bn6.running_mean
+  29. bn6.running_var
+  30. bn6.num_batches_tracked
+  31. bn7.weight
+  32. bn7.bias
+  33. bn7.running_mean
+  34. bn7.running_var
+  35. bn7.num_batches_tracked
+  36. bn8.weight
+  37. bn8.bias
+  38. bn8.running_mean
+  39. bn8.running_var
+  40. bn8.num_batches_tracked
+  41. conv1.0.weight
+  42. conv1.1.weight
+  43. conv1.1.bias
+  44. conv1.1.running_mean
+  45. conv1.1.running_var
+  46. conv1.1.num_batches_tracked
+  47. conv2.0.weight
+  48. conv2.1.weight
+  49. conv2.1.bias
+  50. conv2.1.running_mean
+  ... and 26 more
+
+[Model Encoder Keys] First 50:
+   1. encoder.backbone.bn1.weight
+   2. encoder.backbone.bn1.bias
+   3. encoder.backbone.bn1.running_mean
+   4. encoder.backbone.bn1.running_var
+   5. encoder.backbone.bn1.num_batches_tracked
+   6. encoder.backbone.bn2.weight
+   7. encoder.backbone.bn2.bias
+   8. encoder.backbone.bn2.running_mean
+   9. encoder.backbone.bn2.running_var
+  10. encoder.backbone.bn2.num_batches_tracked
+  11. encoder.backbone.bn3.weight
+  12. encoder.backbone.bn3.bias
+  13. encoder.backbone.bn3.running_mean
+  14. encoder.backbone.bn3.running_var
+  15. encoder.backbone.bn3.num_batches_tracked
+  16. encoder.backbone.bn4.weight
+  17. encoder.backbone.bn4.bias
+  18. encoder.backbone.bn4.running_mean
+  19. encoder.backbone.bn4.running_var
+  20. encoder.backbone.bn4.num_batches_tracked
+  21. encoder.backbone.bn5.weight
+  22. encoder.backbone.bn5.bias
+  23. encoder.backbone.bn5.running_mean
+  24. encoder.backbone.bn5.running_var
+  25. encoder.backbone.bn5.num_batches_tracked
+  26. encoder.backbone.bn6.weight
+  27. encoder.backbone.bn6.bias
+  28. encoder.backbone.bn6.running_mean
+  29. encoder.backbone.bn6.running_var
+  30. encoder.backbone.bn6.num_batches_tracked
+  31. encoder.backbone.bn7.weight
+  32. encoder.backbone.bn7.bias
+  33. encoder.backbone.bn7.running_mean
+  34. encoder.backbone.bn7.running_var
+  35. encoder.backbone.bn7.num_batches_tracked
+  36. encoder.backbone.bn8.weight
+  37. encoder.backbone.bn8.bias
+  38. encoder.backbone.bn8.running_mean
+  39. encoder.backbone.bn8.running_var
+  40. encoder.backbone.bn8.num_batches_tracked
+  41. encoder.backbone.conv1.0.weight
+  42. encoder.backbone.conv1.1.weight
+  43. encoder.backbone.conv1.1.bias
+  44. encoder.backbone.conv1.1.running_mean
+  45. encoder.backbone.conv1.1.running_var
+  46. encoder.backbone.conv1.1.num_batches_tracked
+  47. encoder.backbone.conv2.0.weight
+  48. encoder.backbone.conv2.1.weight
+  49. encoder.backbone.conv2.1.bias
+  50. encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Matched Keys] 76 matched:
+  Raw key -> Model key:
+   1. bn1.weight -> encoder.backbone.bn1.weight
+   2. bn1.bias -> encoder.backbone.bn1.bias
+   3. bn1.running_mean -> encoder.backbone.bn1.running_mean
+   4. bn1.running_var -> encoder.backbone.bn1.running_var
+   5. bn1.num_batches_tracked -> encoder.backbone.bn1.num_batches_tracked
+   6. bn2.weight -> encoder.backbone.bn2.weight
+   7. bn2.bias -> encoder.backbone.bn2.bias
+   8. bn2.running_mean -> encoder.backbone.bn2.running_mean
+   9. bn2.running_var -> encoder.backbone.bn2.running_var
+  10. bn2.num_batches_tracked -> encoder.backbone.bn2.num_batches_tracked
+  11. bn3.weight -> encoder.backbone.bn3.weight
+  12. bn3.bias -> encoder.backbone.bn3.bias
+  13. bn3.running_mean -> encoder.backbone.bn3.running_mean
+  14. bn3.running_var -> encoder.backbone.bn3.running_var
+  15. bn3.num_batches_tracked -> encoder.backbone.bn3.num_batches_tracked
+  16. bn4.weight -> encoder.backbone.bn4.weight
+  17. bn4.bias -> encoder.backbone.bn4.bias
+  18. bn4.running_mean -> encoder.backbone.bn4.running_mean
+  19. bn4.running_var -> encoder.backbone.bn4.running_var
+  20. bn4.num_batches_tracked -> encoder.backbone.bn4.num_batches_tracked
+  21. bn5.weight -> encoder.backbone.bn5.weight
+  22. bn5.bias -> encoder.backbone.bn5.bias
+  23. bn5.running_mean -> encoder.backbone.bn5.running_mean
+  24. bn5.running_var -> encoder.backbone.bn5.running_var
+  25. bn5.num_batches_tracked -> encoder.backbone.bn5.num_batches_tracked
+  26. bn6.weight -> encoder.backbone.bn6.weight
+  27. bn6.bias -> encoder.backbone.bn6.bias
+  28. bn6.running_mean -> encoder.backbone.bn6.running_mean
+  29. bn6.running_var -> encoder.backbone.bn6.running_var
+  30. bn6.num_batches_tracked -> encoder.backbone.bn6.num_batches_tracked
+  31. bn7.weight -> encoder.backbone.bn7.weight
+  32. bn7.bias -> encoder.backbone.bn7.bias
+  33. bn7.running_mean -> encoder.backbone.bn7.running_mean
+  34. bn7.running_var -> encoder.backbone.bn7.running_var
+  35. bn7.num_batches_tracked -> encoder.backbone.bn7.num_batches_tracked
+  36. bn8.weight -> encoder.backbone.bn8.weight
+  37. bn8.bias -> encoder.backbone.bn8.bias
+  38. bn8.running_mean -> encoder.backbone.bn8.running_mean
+  39. bn8.running_var -> encoder.backbone.bn8.running_var
+  40. bn8.num_batches_tracked -> encoder.backbone.bn8.num_batches_tracked
+  41. conv1.0.weight -> encoder.backbone.conv1.0.weight
+  42. conv1.1.weight -> encoder.backbone.conv1.1.weight
+  43. conv1.1.bias -> encoder.backbone.conv1.1.bias
+  44. conv1.1.running_mean -> encoder.backbone.conv1.1.running_mean
+  45. conv1.1.running_var -> encoder.backbone.conv1.1.running_var
+  46. conv1.1.num_batches_tracked -> encoder.backbone.conv1.1.num_batches_tracked
+  47. conv2.0.weight -> encoder.backbone.conv2.0.weight
+  48. conv2.1.weight -> encoder.backbone.conv2.1.weight
+  49. conv2.1.bias -> encoder.backbone.conv2.1.bias
+  50. conv2.1.running_mean -> encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Loading Ratio] 1.0000 (76/76)
+
+[SUCCESS] Pretrained encoder weights loaded successfully!
+=== END CHECKPOINT DIAGNOSTICS ===
+
+load s3dis gpt35
+load text: gpt_prompts/s3dis_10_gpt-3.5-turbo.pth
+load text_diff: gpt_prompts/s3dis_visual_geometry_difference2_gpt-3.5-turbo.pth

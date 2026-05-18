@@ -109,6 +109,11 @@ if __name__ == '__main__':
     parser.add_argument('--use_cps', action='store_true', help='if use commonality-based prototype selection')
     parser.add_argument('--cps_alpha', type=float, default=0.3, help='Residual weight for CPS purified prototype')
 
+    # Debug logging configuration
+    parser.add_argument('--enable_debug_logs', action='store_true', help='Enable detailed debug logging to file')
+    parser.add_argument('--debug_log_interval', type=int, default=500, help='Interval for periodic debug logs')
+    parser.add_argument('--debug_log_first_n', type=int, default=3, help='Number of initial iterations to log')
+
     # Fusion configuration
     parser.add_argument('--fusion_mode', type=str, default='scalar', choices=['scalar', 'dynamic'],
                         help='Fusion mode: scalar (static) or dynamic (point-wise)')
