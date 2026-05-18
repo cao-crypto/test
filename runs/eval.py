@@ -101,7 +101,7 @@ def eval(args):
     logger = init_logger(args.log_dir, args)
 
     if args.phase == 'gpcpreval':
-        learner = GPCPRLearner(args, mode='test')
+        learner = GPCPRLearner(args, mode='test', logger=logger)
 
     # Init dataset, dataloader
     TEST_DATASET = MyTestDataset(args.data_path, args.dataset, cvfold=args.cvfold,

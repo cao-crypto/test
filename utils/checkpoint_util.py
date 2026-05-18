@@ -9,13 +9,14 @@ import torch
 def load_pretrain_checkpoint(model, pretrain_checkpoint_path, logger=None):
     """Load pretrained encoder checkpoint with robust prefix-aware key matching."""
     
-    def debug_log(msg):
+    def debug_log(*msgs):
+        msg = " ".join(str(m) for m in msgs)
         if logger is not None and hasattr(logger, 'debug'):
-            logger.debug(str(msg))
+            logger.debug(msg)
         elif logger is not None and hasattr(logger, 'fprint'):
-            logger.fprint(str(msg))
+            logger.fprint(msg)
         else:
-            print(str(msg))
+            pass
     
     model_dict = model.state_dict()
     
@@ -213,7 +214,16 @@ def load_pretrain_checkpoint(model, pretrain_checkpoint_path, logger=None):
     return model
 
 
-def load_model_checkpoint(model, model_checkpoint_path, optimizer=None, mode='test'):
+def load_model_checkpoint(model, model_checkpoint_path, optimizer=None, mode='test', logger=None):
+    def debug_log(*msgs):
+        msg = " ".join(str(m) for m in msgs)
+        if logger is not None and hasattr(logger, 'debug'):
+            logger.debug(msg)
+        elif logger is not None and hasattr(logger, 'fprint'):
+            logger.fprint(msg)
+        else:
+            pass
+
     try:
         checkpoint = torch.load(os.path.join(model_checkpoint_path, 'checkpoint.tar'))
         start_iter = checkpoint['iteration']
@@ -223,14 +233,14 @@ def load_model_checkpoint(model, model_checkpoint_path, optimizer=None, mode='te
 
     model.load_state_dict(checkpoint['model_state_dict'], strict=False)
     if mode == 'test':
-        print('Load model checkpoint at Iteration %d (IoU %f)...' % (start_iter, start_iou))
+        debug_log('Load model checkpoint at Iteration %d (IoU %f)...' % (start_iter, start_iou))
         return model
     else:
         try:
             optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         except:
-            print('Checkpoint does not include optimizer state dict...')
-        print('Resume from checkpoint at Iteration %d (IoU %f)...' % (start_iter, start_iou))
+            debug_log('Checkpoint does not include optimizer state dict...')
+        debug_log('Resume from checkpoint at Iteration %d (IoU %f)...' % (start_iter, start_iou))
         return model, optimizer
 
 

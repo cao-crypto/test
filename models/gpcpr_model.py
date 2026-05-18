@@ -102,19 +102,6 @@ class MutualAggregationModule(nn.Module):
         Note: Operates in safety mode (identity) because different support shots
         don't have point-index correspondence. Averaging across shots would be invalid.
         """
-        # Debug logs - file only when enabled
-        if self.training and getattr(self, 'enable_debug_logs', False):
-            debug_count = getattr(self, '_mam_debug_logged', 0)
-            if debug_count < getattr(self, 'debug_log_first_n', 3):
-                self.debug_log('\n=== MAM DEBUG (SAFETY MODE) ===')
-                self.debug_log(f'MAM support_feat input shape: {support_feat.shape}')
-                self.debug_log(f'MAM query_feat input shape: {query_feat.shape}')
-                self.debug_log(f'MAM support_feat output shape: {support_feat.shape}')
-                self.debug_log(f'MAM query_feat output shape: {query_feat.shape}')
-                self.debug_log('MAM operating in identity mode (no changes)')
-                self.debug_log('=== END MAM DEBUG ===')
-                setattr(self, '_mam_debug_logged', debug_count + 1)
-        
         # Identity mode - return inputs unchanged
         return support_feat, query_feat
 
@@ -203,38 +190,6 @@ class CommonalityBasedPrototypeSelection(nn.Module):
         
         # Residual blending for background
         bg_proto_final = (1 - self.cps_alpha) * bg_prototype_base + self.cps_alpha * bg_proto_purified
-
-        # Debug logs - file only when enabled
-        if self.training and getattr(self, 'enable_debug_logs', False):
-            debug_count = getattr(self, '_cps_debug_logged', 0)
-            if debug_count < getattr(self, 'debug_log_first_n', 3):
-                self.debug_log('\n=== CPS DEBUG ===')
-                self.debug_log(f'CPS alpha: {self.cps_alpha}')
-                self.debug_log(f'Base fg prototype shapes: {[p.shape for p in fg_prototypes_base]}')
-                self.debug_log(f'Base bg prototype shape: {bg_prototype_base.shape}')
-                
-                # Compute cosine similarities between base and purified
-                self.debug_log('Cosine similarity between base and purified prototypes:')
-                for way in range(n_way):
-                    sim = F.cosine_similarity(fg_prototypes_base[way], fg_prototypes_purified[way], dim=0)
-                    self.debug_log(f'  Foreground way {way}: {float(sim.item()):.4f}')
-                bg_sim = F.cosine_similarity(bg_prototype_base, bg_proto_final, dim=0)
-                self.debug_log(f'  Background: {float(bg_sim.item()):.4f}')
-                
-                # L2 norms
-                self.debug_log('L2 norms:')
-                for way in range(n_way):
-                    self.debug_log(f'  FG way {way} - base: {float(fg_prototypes_base[way].norm().item()):.4f}, purified: {float(fg_prototypes_purified[way].norm().item()):.4f}')
-                self.debug_log(f'  BG - base: {float(bg_prototype_base.norm().item()):.4f}, purified: {float(bg_proto_final.norm().item()):.4f}')
-                
-                # Check for NaN/Inf
-                all_protos = [bg_proto_final] + fg_prototypes_purified
-                has_nan = any(torch.any(torch.isnan(p)).item() for p in all_protos)
-                has_inf = any(torch.any(torch.isinf(p)).item() for p in all_protos)
-                self.debug_log(f'Prototypes contain NaN: {has_nan}')
-                self.debug_log(f'Prototypes contain Inf: {has_inf}')
-                self.debug_log('=== END CPS DEBUG ===')
-                setattr(self, '_cps_debug_logged', debug_count + 1)
 
         # Combine prototypes
         purified_prototypes = [bg_proto_final] + fg_prototypes_purified
@@ -388,11 +343,12 @@ class GPCPR(nn.Module):
     def set_logger(self, logger):
         self.logger = logger
 
-    def debug_log(self, msg):
+    def debug_log(self, *msgs):
+        msg = " ".join(str(m) for m in msgs)
         if getattr(self, 'logger', None) is not None and hasattr(self.logger, 'debug'):
-            self.logger.debug(str(msg))
+            self.logger.debug(msg)
         elif getattr(self, 'logger', None) is not None and hasattr(self.logger, 'fprint'):
-            self.logger.fprint(str(msg))
+            self.logger.fprint(msg)
         else:
             pass
 
@@ -877,17 +833,19 @@ class GPCPR(nn.Module):
         # Select best shot index per way
         best_ids = fg_counts.argmax(dim=1)  # [n_way]
         
-        # Debug logs
-        if self.training and getattr(self, '_proto_debug_logged', 0) <= 3:
-            print('\n=== SUPPORT MEMORY SELECTION DEBUG ===')
-            print(f'support_feat shape: {support_feat.shape}')
-            print(f'fg_mask shape: {fg_mask.shape}')
-            print(f'Foreground counts (way x shot):')
-            for way in range(n_way):
-                print(f'  Way {way}: {[int(fg_counts[way, s].item()) for s in range(k_shot)]}')
-            print(f'Selected best shot IDs: {[int(best_ids[way].item()) for way in range(n_way)]}')
-            print(f'Selected foreground counts: {[int(fg_counts[way, best_ids[way]].item()) for way in range(n_way)]}')
-            print('=== END SUPPORT MEMORY SELECTION DEBUG ===')
+        # Debug logs - file only
+        if getattr(self, 'enable_debug_logs', False):
+            debug_count = getattr(self, '_proto_debug_logged', 0)
+            if debug_count <= getattr(self, 'debug_log_first_n', 3):
+                self.debug_log('\n=== SUPPORT MEMORY SELECTION DEBUG ===')
+                self.debug_log(f'support_feat shape: {support_feat.shape}')
+                self.debug_log(f'fg_mask shape: {fg_mask.shape}')
+                self.debug_log(f'Foreground counts (way x shot):')
+                for way in range(n_way):
+                    self.debug_log(f'  Way {way}: {[int(fg_counts[way, s].item()) for s in range(k_shot)]}')
+                self.debug_log(f'Selected best shot IDs: {[int(best_ids[way].item()) for way in range(n_way)]}')
+                self.debug_log(f'Selected foreground counts: {[int(fg_counts[way, best_ids[way]].item()) for way in range(n_way)]}')
+                self.debug_log('=== END SUPPORT MEMORY SELECTION DEBUG ===')
         
         # Select best shot for each way
         support_memory = []

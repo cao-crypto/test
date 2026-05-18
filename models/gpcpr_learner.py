@@ -16,11 +16,20 @@ from fvcore.nn import FlopCountAnalysis, parameter_count_table
 class GPCPRLearner(object):
 
     def __init__(self, args, mode='train', logger=None):
+        self.args = args
         self.logger = logger
         self.model = GPCPR(args)
-        self.log(self.model)
+        # Debug log model info instead of printing full model
+        self.debug_log(str(self.model.__class__))
+        total_params = sum(p.numel() for p in self.model.parameters())
+        trainable_params = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+        self.debug_log(f"Model parameters: {total_params:,} total, {trainable_params:,} trainable")
         if torch.cuda.is_available():
             self.model.cuda()
+
+        # Set logger on model if supported
+        if hasattr(self.model, "set_logger"):
+            self.model.set_logger(logger)
 
 
         if mode == 'train':
@@ -166,7 +175,7 @@ class GPCPRLearner(object):
 
         elif mode == 'test':
             # Load model checkpoint
-            self.model = load_model_checkpoint(self.model, args.model_checkpoint_path, mode='test')
+            self.model = load_model_checkpoint(self.model, args.model_checkpoint_path, mode='test', logger=self.logger)
             # print("#Model parameters: {}".format(sum([x.nelement() for x in self.model.parameters()])))
         else:
             raise ValueError('Wrong GMMLearner mode (%s)! Option:train/test' %mode)
@@ -200,7 +209,7 @@ class GPCPRLearner(object):
                     # 根据实际数据结构进行处理
                     self.embeddings = loaded_data.float()
             else:
-                print('!!! input wrong text embedding_type!!!')
+                self.debug_log('!!! input wrong text embedding_type!!!')
             if args.embedding_type in ['clip','gpt35','gpt4omini']:
                 self.embeddings = self.embeddings.float()
             self.embeddings = torch.nn.functional.normalize(self.embeddings, p=2, dim=-1)
@@ -210,17 +219,19 @@ class GPCPRLearner(object):
             self.debug_log('load text_diff: gpt_prompts/{}_visual_geometry_difference2_{}.pth'.format(args.dataset, vec_name))
             self.embeddings_diff = torch.load('gpt_prompts/{}_visual_geometry_difference2_{}.pth'.format(args.dataset, vec_name),map_location='cpu')
 
-    def log(self, msg):
-        if self.logger is not None:
-            self.logger.cprint(str(msg))
+    def log(self, *msgs):
+        msg = " ".join(str(m) for m in msgs)
+        if getattr(self, 'logger', None) is not None:
+            self.logger.cprint(msg)
         else:
-            print(str(msg))
+            print(msg)
 
-    def debug_log(self, msg):
-        if self.logger is not None and hasattr(self.logger, 'debug'):
-            self.logger.debug(str(msg))
-        elif self.logger is not None and hasattr(self.logger, 'fprint'):
-            self.logger.fprint(str(msg))
+    def debug_log(self, *msgs):
+        msg = " ".join(str(m) for m in msgs)
+        if getattr(self, 'logger', None) is not None and hasattr(self.logger, 'debug'):
+            self.logger.debug(msg)
+        elif getattr(self, 'logger', None) is not None and hasattr(self.logger, 'fprint'):
+            self.logger.fprint(msg)
         else:
             pass
 
