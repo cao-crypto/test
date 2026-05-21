@@ -325,6 +325,7 @@ class GPCPR(nn.Module):
         # MAM and CPS modules
         self.use_mam = args.use_mam
         self.use_cps = args.use_cps
+        self.enable_cps_1shot = getattr(args, 'enable_cps_1shot', False)
         if self.use_mam:
             self.mam = MutualAggregationModule(dim=args.train_dim, num_heads=4, dropout=0.1)
         if self.use_cps:
@@ -427,16 +428,37 @@ class GPCPR(nn.Module):
                 shot_counts = [int(bg_counts[way, shot].item()) for shot in range(self.k_shot)]
                 self.debug_log(f'  Way {way}: {shot_counts} (total: {int(bg_counts[way].sum().item())})')
 
-        # Commonality-based Prototype Selection (CPS)
-        if self.use_cps:
-            # Apply CPS to purify prototypes
-            purified_prototypes = self.cps(support_feat, query_feat, fg_mask, bg_mask, self.n_way, self.k_shot)
-            prototypes = torch.stack(purified_prototypes, dim=0)
+        # Shot-aware prototype selection
+        # For k_shot=1, use the stable original path to preserve 1-shot performance
+        # For k_shot>1, use robust shot-level weighted prototype and optional CPS
+        if self.k_shot == 1 and not getattr(self, 'enable_cps_1shot', False):
+            # Use simple weighted prototype for 1-shot (original stable path)
+            if do_debug:
+                self.debug_log('\n=== SHOT-AWARE PATH SELECTION ===')
+                self.debug_log(f'k_shot={self.k_shot}, using simple getWeightedPrototype (original 1-shot path)')
+                self.debug_log('CPS bypassed for 1-shot mode')
+                self.debug_log('=== END PATH SELECTION ===')
+            
+            fg_prototypes, bg_prototype = self.getWeightedPrototype(support_feat, fg_mask, bg_mask)
+            prototypes = torch.stack([bg_prototype] + fg_prototypes, dim=0)
         else:
-            # Use robust shot-level weighted prototype aggregation
-            fg_prototypes, bg_prototype = self.getRobustWeightedPrototype(support_feat, fg_mask, bg_mask)
-            prototypes = [bg_prototype] + fg_prototypes
-            prototypes = torch.stack(prototypes, dim=0)
+            # Use robust path for k_shot > 1 or when CPS is explicitly enabled for 1-shot
+            if do_debug:
+                self.debug_log('\n=== SHOT-AWARE PATH SELECTION ===')
+                self.debug_log(f'k_shot={self.k_shot}, using robust prototype path')
+                if self.k_shot == 1 and getattr(self, 'enable_cps_1shot', False):
+                    self.debug_log('CPS explicitly enabled for 1-shot via --enable_cps_1shot')
+                self.debug_log('=== END PATH SELECTION ===')
+            
+            if self.use_cps:
+                # Apply CPS to purify prototypes
+                purified_prototypes = self.cps(support_feat, query_feat, fg_mask, bg_mask, self.n_way, self.k_shot)
+                prototypes = torch.stack(purified_prototypes, dim=0)
+            else:
+                # Use robust shot-level weighted prototype aggregation
+                fg_prototypes, bg_prototype = self.getRobustWeightedPrototype(support_feat, fg_mask, bg_mask)
+                prototypes = [bg_prototype] + fg_prototypes
+                prototypes = torch.stack(prototypes, dim=0)
         
         # Additional debug logs for prototype quality
         if do_debug:
@@ -917,8 +939,15 @@ class GPCPR(nn.Module):
         """
         n_way, k_shot, C, N = support_feat.shape
         
+        # For k_shot=1, fallback to simple weighted prototype (identity-compatible)
+        if k_shot == 1:
+            do_debug = getattr(self, 'enable_debug_logs', False)
+            if do_debug:
+                self.debug_log('getRobustWeightedPrototype: k_shot=1, falling back to getWeightedPrototype')
+            return self.getWeightedPrototype(support_feat, fg_mask, bg_mask)
+        
         # Debug logging
-        do_debug = self.should_debug_log()
+        do_debug = getattr(self, 'enable_debug_logs', False)
         
         # Compute foreground prototypes (one per way) with shot-level reliability weighting
         fg_prototypes = []

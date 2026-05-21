@@ -5,7 +5,7 @@ s3dis
 --cvfold
 1
 --data_path
-../tri-sunshi-master-4.30/datasets/S3DIS/blocks_bs1_s1
+../test1/datasets/S3DIS/blocks_bs1_s1
 --save_path
 ./log_s3dis/
 --pc_npts
@@ -25,9 +25,9 @@ xyzrgbXYZ
 --pc_augm_shift
 0.1
 --n_iters
-50
+100
 --eval_interval
-3
+10
 --batch_size
 16
 --n_workers

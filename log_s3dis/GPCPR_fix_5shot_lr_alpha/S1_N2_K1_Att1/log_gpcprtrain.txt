@@ -1,0 +1,1279 @@
+------------ Options -------------
+backbone_name: dgcnn
+base_widths: [128, 64]
+batch_size: 1
+boundary_knn_k: 5
+cps_alpha: 0.1
+cvfold: 1
+data_path: ./datasets/S3DIS/blocks_bs1_s1
+dataset: s3dis
+dd_ratio1: 0.5
+dd_ratio2: 0.5
+debug_log_first_n: 3
+debug_log_interval: 500
+dgcnn_k: 20
+dgcnn_mlp_widths: [512, 256]
+dist_method: euclidean
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+embedding_num: 10
+embedding_type: gpt35
+enable_cps_1shot: False
+enable_debug_logs: False
+eval_interval: 1000
+fusion_mode: scalar
+gamma: 0.5
+generator_lr: 0.0001
+gmm_dropout: 0.1
+gmm_weight: 0.1
+k_shot: 1
+lambda_boundary: 0.1
+log_dir: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/S1_N2_K1_Att1
+lr: 0.0005
+model_checkpoint_path: None
+n_episode_test: 100
+n_iters: 30000
+n_queries: 1
+n_way: 2
+n_workers: 16
+noise_dim: 1024
+output_dim: 64
+pc_attribs: xyzrgbXYZ
+pc_augm: False
+pc_augm_color: 0
+pc_augm_jitter: 1
+pc_augm_mirror_prob: 0
+pc_augm_rot: 1
+pc_augm_scale: 0
+pc_augm_shift: 0
+pc_in_dim: 9
+pc_npts: 2048
+phase: gpcprtrain
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S1
+pretrain_gamma: 0.5
+pretrain_lr: 0.001
+pretrain_step_size: 50
+pretrain_weight_decay: 0.0
+save_path: ./log_s3dis/GPCPR_fix_5shot_lr_alpha/
+step_size: 8000
+train_dim: 320
+trans_lr: 5e-05
+use_align: True
+use_attention: True
+use_boundary_shallow: False
+use_channelwise_dynamic_fusion: False
+use_cps: True
+use_dd_loss: True
+use_high_dgcnn: True
+use_linear_proj: False
+use_mam: True
+use_pcpr: True
+use_supervise_prototype: True
+use_text: True
+use_text_diff: True
+use_transformer: True
+-------------- End ----------------
+
+<class 'models.gpcpr_model.GPCPR'>
+Model parameters: 7,057,028 total, 7,057,028 trainable
+
+=== OPTIMIZER DIAGNOSTICS ===
+Total trainable parameters in model: 7,057,028
+Total parameters in optimizer: 7,057,028
+Difference (model - optimizer): 0
+
+Parameter counts per module:
+  encoder: 77,568
+  base_learner: 41,536
+  att_learner: 49,152
+  transformer: 2,302,912
+  text_projector: 430,720
+  text_compressor: 410,880
+  text_compressor_diff: 410,880
+  proto_compressor: 308,160
+  sim_head: 2,876,803
+  fusion: 148,417
+  mam: 0
+  cps: 0 (no trainable parameters by design)
+=== END OPTIMIZER DIAGNOSTICS ===
+
+=== BACKBONE CONFIGURATION ===
+backbone_name: dgcnn
+use_high_dgcnn: True
+dataset: s3dis
+cvfold: 1
+pretrain_checkpoint_path: ./log_s3dis/pretrain_S1
+dgcnn_k: 20
+edgeconv_widths: [[64, 64], [64, 64], [64, 64]]
+dgcnn_mlp_widths: [512, 256]
+=== END BACKBONE CONFIGURATION ===
+
+=== CHECKPOINT DIAGNOSTICS ===
+Loading encoder module from pretrained checkpoint: ./log_s3dis/pretrain_S1
+
+[Stats] Raw checkpoint keys: 76
+[Stats] Model encoder keys: 76
+
+[Raw Checkpoint Keys] First 50:
+   1. backbone.bn1.weight
+   2. backbone.bn1.bias
+   3. backbone.bn1.running_mean
+   4. backbone.bn1.running_var
+   5. backbone.bn1.num_batches_tracked
+   6. backbone.bn2.weight
+   7. backbone.bn2.bias
+   8. backbone.bn2.running_mean
+   9. backbone.bn2.running_var
+  10. backbone.bn2.num_batches_tracked
+  11. backbone.bn3.weight
+  12. backbone.bn3.bias
+  13. backbone.bn3.running_mean
+  14. backbone.bn3.running_var
+  15. backbone.bn3.num_batches_tracked
+  16. backbone.bn4.weight
+  17. backbone.bn4.bias
+  18. backbone.bn4.running_mean
+  19. backbone.bn4.running_var
+  20. backbone.bn4.num_batches_tracked
+  21. backbone.bn5.weight
+  22. backbone.bn5.bias
+  23. backbone.bn5.running_mean
+  24. backbone.bn5.running_var
+  25. backbone.bn5.num_batches_tracked
+  26. backbone.bn6.weight
+  27. backbone.bn6.bias
+  28. backbone.bn6.running_mean
+  29. backbone.bn6.running_var
+  30. backbone.bn6.num_batches_tracked
+  31. backbone.bn7.weight
+  32. backbone.bn7.bias
+  33. backbone.bn7.running_mean
+  34. backbone.bn7.running_var
+  35. backbone.bn7.num_batches_tracked
+  36. backbone.bn8.weight
+  37. backbone.bn8.bias
+  38. backbone.bn8.running_mean
+  39. backbone.bn8.running_var
+  40. backbone.bn8.num_batches_tracked
+  41. backbone.conv1.0.weight
+  42. backbone.conv1.1.weight
+  43. backbone.conv1.1.bias
+  44. backbone.conv1.1.running_mean
+  45. backbone.conv1.1.running_var
+  46. backbone.conv1.1.num_batches_tracked
+  47. backbone.conv2.0.weight
+  48. backbone.conv2.1.weight
+  49. backbone.conv2.1.bias
+  50. backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Model Encoder Keys] First 50:
+   1. encoder.backbone.bn1.weight
+   2. encoder.backbone.bn1.bias
+   3. encoder.backbone.bn1.running_mean
+   4. encoder.backbone.bn1.running_var
+   5. encoder.backbone.bn1.num_batches_tracked
+   6. encoder.backbone.bn2.weight
+   7. encoder.backbone.bn2.bias
+   8. encoder.backbone.bn2.running_mean
+   9. encoder.backbone.bn2.running_var
+  10. encoder.backbone.bn2.num_batches_tracked
+  11. encoder.backbone.bn3.weight
+  12. encoder.backbone.bn3.bias
+  13. encoder.backbone.bn3.running_mean
+  14. encoder.backbone.bn3.running_var
+  15. encoder.backbone.bn3.num_batches_tracked
+  16. encoder.backbone.bn4.weight
+  17. encoder.backbone.bn4.bias
+  18. encoder.backbone.bn4.running_mean
+  19. encoder.backbone.bn4.running_var
+  20. encoder.backbone.bn4.num_batches_tracked
+  21. encoder.backbone.bn5.weight
+  22. encoder.backbone.bn5.bias
+  23. encoder.backbone.bn5.running_mean
+  24. encoder.backbone.bn5.running_var
+  25. encoder.backbone.bn5.num_batches_tracked
+  26. encoder.backbone.bn6.weight
+  27. encoder.backbone.bn6.bias
+  28. encoder.backbone.bn6.running_mean
+  29. encoder.backbone.bn6.running_var
+  30. encoder.backbone.bn6.num_batches_tracked
+  31. encoder.backbone.bn7.weight
+  32. encoder.backbone.bn7.bias
+  33. encoder.backbone.bn7.running_mean
+  34. encoder.backbone.bn7.running_var
+  35. encoder.backbone.bn7.num_batches_tracked
+  36. encoder.backbone.bn8.weight
+  37. encoder.backbone.bn8.bias
+  38. encoder.backbone.bn8.running_mean
+  39. encoder.backbone.bn8.running_var
+  40. encoder.backbone.bn8.num_batches_tracked
+  41. encoder.backbone.conv1.0.weight
+  42. encoder.backbone.conv1.1.weight
+  43. encoder.backbone.conv1.1.bias
+  44. encoder.backbone.conv1.1.running_mean
+  45. encoder.backbone.conv1.1.running_var
+  46. encoder.backbone.conv1.1.num_batches_tracked
+  47. encoder.backbone.conv2.0.weight
+  48. encoder.backbone.conv2.1.weight
+  49. encoder.backbone.conv2.1.bias
+  50. encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Matched Keys] 76 matched:
+  Raw key -> Model key:
+   1. backbone.bn1.weight -> encoder.backbone.bn1.weight
+   2. backbone.bn1.bias -> encoder.backbone.bn1.bias
+   3. backbone.bn1.running_mean -> encoder.backbone.bn1.running_mean
+   4. backbone.bn1.running_var -> encoder.backbone.bn1.running_var
+   5. backbone.bn1.num_batches_tracked -> encoder.backbone.bn1.num_batches_tracked
+   6. backbone.bn2.weight -> encoder.backbone.bn2.weight
+   7. backbone.bn2.bias -> encoder.backbone.bn2.bias
+   8. backbone.bn2.running_mean -> encoder.backbone.bn2.running_mean
+   9. backbone.bn2.running_var -> encoder.backbone.bn2.running_var
+  10. backbone.bn2.num_batches_tracked -> encoder.backbone.bn2.num_batches_tracked
+  11. backbone.bn3.weight -> encoder.backbone.bn3.weight
+  12. backbone.bn3.bias -> encoder.backbone.bn3.bias
+  13. backbone.bn3.running_mean -> encoder.backbone.bn3.running_mean
+  14. backbone.bn3.running_var -> encoder.backbone.bn3.running_var
+  15. backbone.bn3.num_batches_tracked -> encoder.backbone.bn3.num_batches_tracked
+  16. backbone.bn4.weight -> encoder.backbone.bn4.weight
+  17. backbone.bn4.bias -> encoder.backbone.bn4.bias
+  18. backbone.bn4.running_mean -> encoder.backbone.bn4.running_mean
+  19. backbone.bn4.running_var -> encoder.backbone.bn4.running_var
+  20. backbone.bn4.num_batches_tracked -> encoder.backbone.bn4.num_batches_tracked
+  21. backbone.bn5.weight -> encoder.backbone.bn5.weight
+  22. backbone.bn5.bias -> encoder.backbone.bn5.bias
+  23. backbone.bn5.running_mean -> encoder.backbone.bn5.running_mean
+  24. backbone.bn5.running_var -> encoder.backbone.bn5.running_var
+  25. backbone.bn5.num_batches_tracked -> encoder.backbone.bn5.num_batches_tracked
+  26. backbone.bn6.weight -> encoder.backbone.bn6.weight
+  27. backbone.bn6.bias -> encoder.backbone.bn6.bias
+  28. backbone.bn6.running_mean -> encoder.backbone.bn6.running_mean
+  29. backbone.bn6.running_var -> encoder.backbone.bn6.running_var
+  30. backbone.bn6.num_batches_tracked -> encoder.backbone.bn6.num_batches_tracked
+  31. backbone.bn7.weight -> encoder.backbone.bn7.weight
+  32. backbone.bn7.bias -> encoder.backbone.bn7.bias
+  33. backbone.bn7.running_mean -> encoder.backbone.bn7.running_mean
+  34. backbone.bn7.running_var -> encoder.backbone.bn7.running_var
+  35. backbone.bn7.num_batches_tracked -> encoder.backbone.bn7.num_batches_tracked
+  36. backbone.bn8.weight -> encoder.backbone.bn8.weight
+  37. backbone.bn8.bias -> encoder.backbone.bn8.bias
+  38. backbone.bn8.running_mean -> encoder.backbone.bn8.running_mean
+  39. backbone.bn8.running_var -> encoder.backbone.bn8.running_var
+  40. backbone.bn8.num_batches_tracked -> encoder.backbone.bn8.num_batches_tracked
+  41. backbone.conv1.0.weight -> encoder.backbone.conv1.0.weight
+  42. backbone.conv1.1.weight -> encoder.backbone.conv1.1.weight
+  43. backbone.conv1.1.bias -> encoder.backbone.conv1.1.bias
+  44. backbone.conv1.1.running_mean -> encoder.backbone.conv1.1.running_mean
+  45. backbone.conv1.1.running_var -> encoder.backbone.conv1.1.running_var
+  46. backbone.conv1.1.num_batches_tracked -> encoder.backbone.conv1.1.num_batches_tracked
+  47. backbone.conv2.0.weight -> encoder.backbone.conv2.0.weight
+  48. backbone.conv2.1.weight -> encoder.backbone.conv2.1.weight
+  49. backbone.conv2.1.bias -> encoder.backbone.conv2.1.bias
+  50. backbone.conv2.1.running_mean -> encoder.backbone.conv2.1.running_mean
+  ... and 26 more
+
+[Loading Ratio] 1.0000 (76/76)
+
+[SUCCESS] Pretrained encoder weights loaded successfully!
+=== END CHECKPOINT DIAGNOSTICS ===
+
+load s3dis gpt35
+load text: gpt_prompts/s3dis_10_gpt-3.5-turbo.pth
+load text_diff: gpt_prompts/s3dis_visual_geometry_difference2_gpt-3.5-turbo.pth
+=====[Train] Iter: 99 | Loss: 1.5379 | Accuracy: 0.838867 =====
+=====[Train] Iter: 199 | Loss: 0.9476 | Accuracy: 0.971924 =====
+=====[Train] Iter: 299 | Loss: 1.3267 | Accuracy: 0.952637 =====
+=====[Train] Iter: 399 | Loss: 1.8417 | Accuracy: 0.930908 =====
+=====[Train] Iter: 499 | Loss: 1.1272 | Accuracy: 0.932617 =====
+=====[Train] Iter: 599 | Loss: 1.2440 | Accuracy: 0.880615 =====
+=====[Train] Iter: 699 | Loss: 0.6826 | Accuracy: 0.960693 =====
+=====[Train] Iter: 799 | Loss: 0.5737 | Accuracy: 0.946045 =====
+=====[Train] Iter: 899 | Loss: 0.8475 | Accuracy: 0.981689 =====
+=====[Train] Iter: 999 | Loss: 0.4178 | Accuracy: 0.981201 =====
+[Eval] Iter: 100 | Loss: 1.9063 | Acc: 0.78 | 2026-05-19 15:02:29.842116
+[Eval] Iter: 200 | Loss: 1.3559 | Acc: 0.90 | 2026-05-19 15:02:34.608687
+[Eval] Iter: 300 | Loss: 1.1048 | Acc: 0.89 | 2026-05-19 15:02:39.390931
+[Eval] Iter: 400 | Loss: 1.7331 | Acc: 0.62 | 2026-05-19 15:02:44.179219
+[Eval] Iter: 500 | Loss: 1.9610 | Acc: 0.54 | 2026-05-19 15:02:48.974714
+[Eval] Iter: 600 | Loss: 0.9679 | Acc: 0.93 | 2026-05-19 15:02:53.947554
+[Eval] Iter: 700 | Loss: 1.7280 | Acc: 0.73 | 2026-05-19 15:02:58.721414
+[Eval] Iter: 800 | Loss: 2.5307 | Acc: 0.51 | 2026-05-19 15:03:03.497315
+[Eval] Iter: 900 | Loss: 1.0989 | Acc: 0.90 | 2026-05-19 15:03:08.283624
+[Eval] Iter: 1000 | Loss: 1.1152 | Acc: 0.95 | 2026-05-19 15:03:13.033199
+[Eval] Iter: 1100 | Loss: 1.3009 | Acc: 0.79 | 2026-05-19 15:03:17.803707
+[Eval] Iter: 1200 | Loss: 0.9078 | Acc: 0.96 | 2026-05-19 15:03:22.583928
+[Eval] Iter: 1300 | Loss: 1.9234 | Acc: 0.86 | 2026-05-19 15:03:27.663094
+[Eval] Iter: 1400 | Loss: 1.2830 | Acc: 0.89 | 2026-05-19 15:03:32.428185
+[Eval] Iter: 1500 | Loss: 2.2268 | Acc: 0.80 | 2026-05-19 15:03:37.191606
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.728008 -----
+----- [class 1]  IoU: 0.711024 -----
+----- [class 2]  IoU: 0.737597 -----
+----- [class 3]  IoU: 0.765111 -----
+----- [class 4]  IoU: 0.585848 -----
+----- [class 5]  IoU: 0.528142 -----
+----- [class 6]  IoU: 0.697714 -----
+
+=====[VALID] Loss: 1.4697 | Mean IoU: 0.670906  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.670906 =====
+
+=====[Train] Iter: 1099 | Loss: 0.8542 | Accuracy: 0.929688 =====
+=====[Train] Iter: 1199 | Loss: 0.5668 | Accuracy: 0.971191 =====
+=====[Train] Iter: 1299 | Loss: 0.9471 | Accuracy: 0.935547 =====
+=====[Train] Iter: 1399 | Loss: 0.7325 | Accuracy: 0.948242 =====
+=====[Train] Iter: 1499 | Loss: 0.4170 | Accuracy: 0.984863 =====
+=====[Train] Iter: 1599 | Loss: 0.7959 | Accuracy: 0.933350 =====
+=====[Train] Iter: 1699 | Loss: 0.6438 | Accuracy: 0.966797 =====
+=====[Train] Iter: 1799 | Loss: 0.6184 | Accuracy: 0.983398 =====
+=====[Train] Iter: 1899 | Loss: 0.5291 | Accuracy: 0.970459 =====
+=====[Train] Iter: 1999 | Loss: 0.7128 | Accuracy: 0.950684 =====
+[Eval] Iter: 100 | Loss: 1.7213 | Acc: 0.84 | 2026-05-19 15:06:31.049896
+[Eval] Iter: 200 | Loss: 1.4823 | Acc: 0.83 | 2026-05-19 15:06:35.894393
+[Eval] Iter: 300 | Loss: 0.8754 | Acc: 0.94 | 2026-05-19 15:06:40.773764
+[Eval] Iter: 400 | Loss: 2.2720 | Acc: 0.57 | 2026-05-19 15:06:45.568511
+[Eval] Iter: 500 | Loss: 1.7841 | Acc: 0.79 | 2026-05-19 15:06:50.387237
+[Eval] Iter: 600 | Loss: 0.8841 | Acc: 0.95 | 2026-05-19 15:06:55.267642
+[Eval] Iter: 700 | Loss: 1.6947 | Acc: 0.75 | 2026-05-19 15:07:00.085773
+[Eval] Iter: 800 | Loss: 2.3159 | Acc: 0.43 | 2026-05-19 15:07:04.897354
+[Eval] Iter: 900 | Loss: 0.9604 | Acc: 0.91 | 2026-05-19 15:07:09.712456
+[Eval] Iter: 1000 | Loss: 0.9703 | Acc: 0.94 | 2026-05-19 15:07:14.527812
+[Eval] Iter: 1100 | Loss: 1.3770 | Acc: 0.78 | 2026-05-19 15:07:19.390660
+[Eval] Iter: 1200 | Loss: 0.8352 | Acc: 0.95 | 2026-05-19 15:07:24.211392
+[Eval] Iter: 1300 | Loss: 1.8887 | Acc: 0.87 | 2026-05-19 15:07:29.015541
+[Eval] Iter: 1400 | Loss: 1.2857 | Acc: 0.89 | 2026-05-19 15:07:33.816986
+[Eval] Iter: 1500 | Loss: 2.3054 | Acc: 0.80 | 2026-05-19 15:07:38.641114
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.752707 -----
+----- [class 1]  IoU: 0.757313 -----
+----- [class 2]  IoU: 0.717154 -----
+----- [class 3]  IoU: 0.793967 -----
+----- [class 4]  IoU: 0.642846 -----
+----- [class 5]  IoU: 0.508536 -----
+----- [class 6]  IoU: 0.754091 -----
+
+=====[VALID] Loss: 1.4289 | Mean IoU: 0.695651  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.695651 =====
+
+=====[Train] Iter: 2099 | Loss: 0.4886 | Accuracy: 0.969727 =====
+=====[Train] Iter: 2199 | Loss: 0.8684 | Accuracy: 0.920166 =====
+=====[Train] Iter: 2299 | Loss: 0.7411 | Accuracy: 0.947998 =====
+=====[Train] Iter: 2399 | Loss: 0.8563 | Accuracy: 0.938721 =====
+=====[Train] Iter: 2499 | Loss: 0.9213 | Accuracy: 0.944824 =====
+=====[Train] Iter: 2599 | Loss: 0.8525 | Accuracy: 0.938232 =====
+=====[Train] Iter: 2699 | Loss: 3.3255 | Accuracy: 0.746826 =====
+=====[Train] Iter: 2799 | Loss: 1.4544 | Accuracy: 0.873535 =====
+=====[Train] Iter: 2899 | Loss: 0.5949 | Accuracy: 0.965576 =====
+=====[Train] Iter: 2999 | Loss: 0.4888 | Accuracy: 0.974121 =====
+[Eval] Iter: 100 | Loss: 1.6702 | Acc: 0.84 | 2026-05-19 15:10:32.861253
+[Eval] Iter: 200 | Loss: 1.5197 | Acc: 0.79 | 2026-05-19 15:10:37.652295
+[Eval] Iter: 300 | Loss: 0.7576 | Acc: 0.95 | 2026-05-19 15:10:42.468906
+[Eval] Iter: 400 | Loss: 2.9710 | Acc: 0.55 | 2026-05-19 15:10:47.250662
+[Eval] Iter: 500 | Loss: 1.3138 | Acc: 0.87 | 2026-05-19 15:10:52.034590
+[Eval] Iter: 600 | Loss: 1.1309 | Acc: 0.93 | 2026-05-19 15:10:56.823278
+[Eval] Iter: 700 | Loss: 2.1280 | Acc: 0.73 | 2026-05-19 15:11:01.677137
+[Eval] Iter: 800 | Loss: 2.7881 | Acc: 0.43 | 2026-05-19 15:11:06.483140
+[Eval] Iter: 900 | Loss: 0.9382 | Acc: 0.91 | 2026-05-19 15:11:11.281491
+[Eval] Iter: 1000 | Loss: 0.8373 | Acc: 0.95 | 2026-05-19 15:11:16.070592
+[Eval] Iter: 1100 | Loss: 1.1130 | Acc: 0.88 | 2026-05-19 15:11:20.861152
+[Eval] Iter: 1200 | Loss: 0.8684 | Acc: 0.95 | 2026-05-19 15:11:25.712475
+[Eval] Iter: 1300 | Loss: 1.8053 | Acc: 0.88 | 2026-05-19 15:11:30.823299
+[Eval] Iter: 1400 | Loss: 1.0742 | Acc: 0.92 | 2026-05-19 15:11:36.388913
+[Eval] Iter: 1500 | Loss: 3.1996 | Acc: 0.79 | 2026-05-19 15:11:41.424970
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.761324 -----
+----- [class 1]  IoU: 0.794999 -----
+----- [class 2]  IoU: 0.707023 -----
+----- [class 3]  IoU: 0.814331 -----
+----- [class 4]  IoU: 0.685225 -----
+----- [class 5]  IoU: 0.566731 -----
+----- [class 6]  IoU: 0.750936 -----
+
+=====[VALID] Loss: 1.4328 | Mean IoU: 0.719874  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.719874 =====
+
+=====[Train] Iter: 3099 | Loss: 0.4908 | Accuracy: 0.970947 =====
+=====[Train] Iter: 3199 | Loss: 0.2606 | Accuracy: 0.987061 =====
+=====[Train] Iter: 3299 | Loss: 0.7923 | Accuracy: 0.965332 =====
+=====[Train] Iter: 3399 | Loss: 0.8123 | Accuracy: 0.947510 =====
+=====[Train] Iter: 3499 | Loss: 0.4198 | Accuracy: 0.975830 =====
+=====[Train] Iter: 3599 | Loss: 0.6118 | Accuracy: 0.956787 =====
+=====[Train] Iter: 3699 | Loss: 0.4759 | Accuracy: 0.977539 =====
+=====[Train] Iter: 3799 | Loss: 0.4999 | Accuracy: 0.973633 =====
+=====[Train] Iter: 3899 | Loss: 1.0395 | Accuracy: 0.960693 =====
+=====[Train] Iter: 3999 | Loss: 0.5643 | Accuracy: 0.985840 =====
+[Eval] Iter: 100 | Loss: 1.7338 | Acc: 0.87 | 2026-05-19 15:14:35.636204
+[Eval] Iter: 200 | Loss: 1.0844 | Acc: 0.86 | 2026-05-19 15:14:40.625502
+[Eval] Iter: 300 | Loss: 0.6971 | Acc: 0.97 | 2026-05-19 15:14:45.425735
+[Eval] Iter: 400 | Loss: 2.2883 | Acc: 0.55 | 2026-05-19 15:14:50.229719
+[Eval] Iter: 500 | Loss: 1.5254 | Acc: 0.86 | 2026-05-19 15:14:55.030343
+[Eval] Iter: 600 | Loss: 0.8550 | Acc: 0.94 | 2026-05-19 15:14:59.864852
+[Eval] Iter: 700 | Loss: 1.6458 | Acc: 0.72 | 2026-05-19 15:15:04.685300
+[Eval] Iter: 800 | Loss: 2.3476 | Acc: 0.47 | 2026-05-19 15:15:09.510844
+[Eval] Iter: 900 | Loss: 0.9152 | Acc: 0.91 | 2026-05-19 15:15:14.327426
+[Eval] Iter: 1000 | Loss: 0.8559 | Acc: 0.92 | 2026-05-19 15:15:19.138540
+[Eval] Iter: 1100 | Loss: 1.3599 | Acc: 0.83 | 2026-05-19 15:15:23.960155
+[Eval] Iter: 1200 | Loss: 0.8322 | Acc: 0.96 | 2026-05-19 15:15:28.786225
+[Eval] Iter: 1300 | Loss: 2.2233 | Acc: 0.85 | 2026-05-19 15:15:33.585378
+[Eval] Iter: 1400 | Loss: 1.1213 | Acc: 0.91 | 2026-05-19 15:15:38.402764
+[Eval] Iter: 1500 | Loss: 3.3163 | Acc: 0.80 | 2026-05-19 15:15:43.230500
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.768595 -----
+----- [class 1]  IoU: 0.802284 -----
+----- [class 2]  IoU: 0.747815 -----
+----- [class 3]  IoU: 0.809923 -----
+----- [class 4]  IoU: 0.661932 -----
+----- [class 5]  IoU: 0.591845 -----
+----- [class 6]  IoU: 0.776382 -----
+
+=====[VALID] Loss: 1.4221 | Mean IoU: 0.731697  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.731697 =====
+
+=====[Train] Iter: 4099 | Loss: 0.9710 | Accuracy: 0.981201 =====
+=====[Train] Iter: 4199 | Loss: 0.5916 | Accuracy: 0.943848 =====
+=====[Train] Iter: 4299 | Loss: 1.0270 | Accuracy: 0.856201 =====
+=====[Train] Iter: 4399 | Loss: 0.2604 | Accuracy: 0.982422 =====
+=====[Train] Iter: 4499 | Loss: 0.3473 | Accuracy: 0.984619 =====
+=====[Train] Iter: 4599 | Loss: 0.3112 | Accuracy: 0.981201 =====
+=====[Train] Iter: 4699 | Loss: 0.3647 | Accuracy: 0.970947 =====
+=====[Train] Iter: 4799 | Loss: 0.6043 | Accuracy: 0.972168 =====
+=====[Train] Iter: 4899 | Loss: 0.5699 | Accuracy: 0.963379 =====
+=====[Train] Iter: 4999 | Loss: 0.9609 | Accuracy: 0.927734 =====
+[Eval] Iter: 100 | Loss: 1.6648 | Acc: 0.88 | 2026-05-19 15:18:38.151145
+[Eval] Iter: 200 | Loss: 1.2233 | Acc: 0.83 | 2026-05-19 15:18:43.090549
+[Eval] Iter: 300 | Loss: 0.8491 | Acc: 0.91 | 2026-05-19 15:18:47.990299
+[Eval] Iter: 400 | Loss: 3.1142 | Acc: 0.48 | 2026-05-19 15:18:52.806523
+[Eval] Iter: 500 | Loss: 1.2911 | Acc: 0.84 | 2026-05-19 15:18:57.622951
+[Eval] Iter: 600 | Loss: 1.0043 | Acc: 0.94 | 2026-05-19 15:19:02.446236
+[Eval] Iter: 700 | Loss: 1.5484 | Acc: 0.75 | 2026-05-19 15:19:07.266436
+[Eval] Iter: 800 | Loss: 3.5604 | Acc: 0.42 | 2026-05-19 15:19:12.084057
+[Eval] Iter: 900 | Loss: 0.9261 | Acc: 0.91 | 2026-05-19 15:19:16.902770
+[Eval] Iter: 1000 | Loss: 1.0179 | Acc: 0.93 | 2026-05-19 15:19:21.710761
+[Eval] Iter: 1100 | Loss: 0.7823 | Acc: 0.95 | 2026-05-19 15:19:26.528547
+[Eval] Iter: 1200 | Loss: 0.8036 | Acc: 0.95 | 2026-05-19 15:19:31.410187
+[Eval] Iter: 1300 | Loss: 1.3200 | Acc: 0.84 | 2026-05-19 15:19:36.352736
+[Eval] Iter: 1400 | Loss: 1.1671 | Acc: 0.89 | 2026-05-19 15:19:41.275217
+[Eval] Iter: 1500 | Loss: 2.3950 | Acc: 0.80 | 2026-05-19 15:19:46.109929
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.779289 -----
+----- [class 1]  IoU: 0.760757 -----
+----- [class 2]  IoU: 0.781806 -----
+----- [class 3]  IoU: 0.799724 -----
+----- [class 4]  IoU: 0.670762 -----
+----- [class 5]  IoU: 0.611642 -----
+----- [class 6]  IoU: 0.813510 -----
+
+=====[VALID] Loss: 1.2555 | Mean IoU: 0.739700  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.739700 =====
+
+=====[Train] Iter: 5099 | Loss: 0.6337 | Accuracy: 0.976318 =====
+=====[Train] Iter: 5199 | Loss: 0.3197 | Accuracy: 0.991943 =====
+=====[Train] Iter: 5299 | Loss: 0.4470 | Accuracy: 0.972412 =====
+=====[Train] Iter: 5399 | Loss: 1.6364 | Accuracy: 0.889648 =====
+=====[Train] Iter: 5499 | Loss: 0.3573 | Accuracy: 0.988037 =====
+=====[Train] Iter: 5599 | Loss: 0.5302 | Accuracy: 0.963135 =====
+=====[Train] Iter: 5699 | Loss: 0.3564 | Accuracy: 0.971924 =====
+=====[Train] Iter: 5799 | Loss: 0.5198 | Accuracy: 0.966309 =====
+=====[Train] Iter: 5899 | Loss: 1.1034 | Accuracy: 0.839844 =====
+=====[Train] Iter: 5999 | Loss: 0.3032 | Accuracy: 0.976074 =====
+[Eval] Iter: 100 | Loss: 1.6469 | Acc: 0.77 | 2026-05-19 15:22:40.687727
+[Eval] Iter: 200 | Loss: 1.0840 | Acc: 0.89 | 2026-05-19 15:22:45.523288
+[Eval] Iter: 300 | Loss: 0.7514 | Acc: 0.96 | 2026-05-19 15:22:50.367825
+[Eval] Iter: 400 | Loss: 1.7486 | Acc: 0.69 | 2026-05-19 15:22:55.202041
+[Eval] Iter: 500 | Loss: 1.1930 | Acc: 0.88 | 2026-05-19 15:23:00.056081
+[Eval] Iter: 600 | Loss: 0.8780 | Acc: 0.95 | 2026-05-19 15:23:04.884352
+[Eval] Iter: 700 | Loss: 1.5771 | Acc: 0.75 | 2026-05-19 15:23:09.714264
+[Eval] Iter: 800 | Loss: 3.7992 | Acc: 0.42 | 2026-05-19 15:23:14.633918
+[Eval] Iter: 900 | Loss: 0.7652 | Acc: 0.91 | 2026-05-19 15:23:19.472735
+[Eval] Iter: 1000 | Loss: 0.8434 | Acc: 0.96 | 2026-05-19 15:23:24.307001
+[Eval] Iter: 1100 | Loss: 0.6704 | Acc: 0.95 | 2026-05-19 15:23:29.132751
+[Eval] Iter: 1200 | Loss: 0.5756 | Acc: 0.99 | 2026-05-19 15:23:33.976700
+[Eval] Iter: 1300 | Loss: 1.9086 | Acc: 0.84 | 2026-05-19 15:23:38.879193
+[Eval] Iter: 1400 | Loss: 0.9304 | Acc: 0.93 | 2026-05-19 15:23:43.711279
+[Eval] Iter: 1500 | Loss: 3.0732 | Acc: 0.80 | 2026-05-19 15:23:48.546806
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.788562 -----
+----- [class 1]  IoU: 0.808374 -----
+----- [class 2]  IoU: 0.753554 -----
+----- [class 3]  IoU: 0.851232 -----
+----- [class 4]  IoU: 0.721866 -----
+----- [class 5]  IoU: 0.611758 -----
+----- [class 6]  IoU: 0.816718 -----
+
+=====[VALID] Loss: 1.3039 | Mean IoU: 0.760584  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.760584 =====
+
+=====[Train] Iter: 6099 | Loss: 0.7305 | Accuracy: 0.918213 =====
+=====[Train] Iter: 6199 | Loss: 1.5491 | Accuracy: 0.762207 =====
+=====[Train] Iter: 6299 | Loss: 0.4692 | Accuracy: 0.978760 =====
+=====[Train] Iter: 6399 | Loss: 0.3195 | Accuracy: 0.987305 =====
+=====[Train] Iter: 6499 | Loss: 1.3190 | Accuracy: 0.967773 =====
+=====[Train] Iter: 6599 | Loss: 0.7382 | Accuracy: 0.934326 =====
+=====[Train] Iter: 6699 | Loss: 0.4873 | Accuracy: 0.966797 =====
+=====[Train] Iter: 6799 | Loss: 0.2985 | Accuracy: 0.985840 =====
+=====[Train] Iter: 6899 | Loss: 1.0648 | Accuracy: 0.961670 =====
+=====[Train] Iter: 6999 | Loss: 1.0111 | Accuracy: 0.914062 =====
+[Eval] Iter: 100 | Loss: 1.9033 | Acc: 0.74 | 2026-05-19 15:26:42.959008
+[Eval] Iter: 200 | Loss: 1.2560 | Acc: 0.80 | 2026-05-19 15:26:47.789185
+[Eval] Iter: 300 | Loss: 0.7269 | Acc: 0.95 | 2026-05-19 15:26:52.605831
+[Eval] Iter: 400 | Loss: 1.0134 | Acc: 0.93 | 2026-05-19 15:26:57.524205
+[Eval] Iter: 500 | Loss: 1.3592 | Acc: 0.84 | 2026-05-19 15:27:02.394258
+[Eval] Iter: 600 | Loss: 0.8553 | Acc: 0.95 | 2026-05-19 15:27:07.265152
+[Eval] Iter: 700 | Loss: 2.0520 | Acc: 0.75 | 2026-05-19 15:27:12.097526
+[Eval] Iter: 800 | Loss: 3.1139 | Acc: 0.50 | 2026-05-19 15:27:16.928913
+[Eval] Iter: 900 | Loss: 0.8030 | Acc: 0.91 | 2026-05-19 15:27:21.760146
+[Eval] Iter: 1000 | Loss: 0.7977 | Acc: 0.96 | 2026-05-19 15:27:26.583072
+[Eval] Iter: 1100 | Loss: 0.6387 | Acc: 0.96 | 2026-05-19 15:27:31.421329
+[Eval] Iter: 1200 | Loss: 0.5491 | Acc: 0.98 | 2026-05-19 15:27:36.277410
+[Eval] Iter: 1300 | Loss: 1.3583 | Acc: 0.90 | 2026-05-19 15:27:41.099665
+[Eval] Iter: 1400 | Loss: 0.8355 | Acc: 0.95 | 2026-05-19 15:27:45.919185
+[Eval] Iter: 1500 | Loss: 3.1037 | Acc: 0.80 | 2026-05-19 15:27:50.748206
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.805552 -----
+----- [class 1]  IoU: 0.831091 -----
+----- [class 2]  IoU: 0.753757 -----
+----- [class 3]  IoU: 0.854220 -----
+----- [class 4]  IoU: 0.723134 -----
+----- [class 5]  IoU: 0.666939 -----
+----- [class 6]  IoU: 0.855694 -----
+
+=====[VALID] Loss: 1.2280 | Mean IoU: 0.780806  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.780806 =====
+
+=====[Train] Iter: 7099 | Loss: 0.3267 | Accuracy: 0.971680 =====
+=====[Train] Iter: 7199 | Loss: 0.4354 | Accuracy: 0.980225 =====
+=====[Train] Iter: 7299 | Loss: 0.5620 | Accuracy: 0.966797 =====
+=====[Train] Iter: 7399 | Loss: 0.2299 | Accuracy: 0.990723 =====
+=====[Train] Iter: 7499 | Loss: 0.6464 | Accuracy: 0.946777 =====
+=====[Train] Iter: 7599 | Loss: 0.5151 | Accuracy: 0.961670 =====
+=====[Train] Iter: 7699 | Loss: 0.3055 | Accuracy: 0.991211 =====
+=====[Train] Iter: 7799 | Loss: 0.2590 | Accuracy: 0.976318 =====
+=====[Train] Iter: 7899 | Loss: 0.4957 | Accuracy: 0.967041 =====
+=====[Train] Iter: 7999 | Loss: 1.0788 | Accuracy: 0.960205 =====
+[Eval] Iter: 100 | Loss: 1.6782 | Acc: 0.87 | 2026-05-19 15:30:44.709869
+[Eval] Iter: 200 | Loss: 1.0147 | Acc: 0.86 | 2026-05-19 15:30:49.554353
+[Eval] Iter: 300 | Loss: 0.7927 | Acc: 0.93 | 2026-05-19 15:30:54.413344
+[Eval] Iter: 400 | Loss: 2.7841 | Acc: 0.48 | 2026-05-19 15:30:59.312369
+[Eval] Iter: 500 | Loss: 1.2641 | Acc: 0.83 | 2026-05-19 15:31:04.142865
+[Eval] Iter: 600 | Loss: 0.6957 | Acc: 0.95 | 2026-05-19 15:31:08.973093
+[Eval] Iter: 700 | Loss: 1.4276 | Acc: 0.79 | 2026-05-19 15:31:13.824995
+[Eval] Iter: 800 | Loss: 5.2919 | Acc: 0.41 | 2026-05-19 15:31:18.659251
+[Eval] Iter: 900 | Loss: 0.7318 | Acc: 0.91 | 2026-05-19 15:31:23.491070
+[Eval] Iter: 1000 | Loss: 0.7791 | Acc: 0.96 | 2026-05-19 15:31:28.387227
+[Eval] Iter: 1100 | Loss: 0.7427 | Acc: 0.93 | 2026-05-19 15:31:33.206241
+[Eval] Iter: 1200 | Loss: 0.6681 | Acc: 0.95 | 2026-05-19 15:31:38.038195
+[Eval] Iter: 1300 | Loss: 1.3570 | Acc: 0.90 | 2026-05-19 15:31:42.859362
+[Eval] Iter: 1400 | Loss: 0.7918 | Acc: 0.94 | 2026-05-19 15:31:47.680230
+[Eval] Iter: 1500 | Loss: 3.2471 | Acc: 0.80 | 2026-05-19 15:31:52.510869
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.792562 -----
+----- [class 1]  IoU: 0.794162 -----
+----- [class 2]  IoU: 0.811045 -----
+----- [class 3]  IoU: 0.858500 -----
+----- [class 4]  IoU: 0.759089 -----
+----- [class 5]  IoU: 0.591137 -----
+----- [class 6]  IoU: 0.808754 -----
+
+=====[VALID] Loss: 1.2637 | Mean IoU: 0.770448  =====
+=====Best valid IoU Is: 0.780806 =====
+
+=====[Train] Iter: 8099 | Loss: 0.4610 | Accuracy: 0.981689 =====
+=====[Train] Iter: 8199 | Loss: 0.4739 | Accuracy: 0.979004 =====
+=====[Train] Iter: 8299 | Loss: 0.8111 | Accuracy: 0.927979 =====
+=====[Train] Iter: 8399 | Loss: 0.6279 | Accuracy: 0.915283 =====
+=====[Train] Iter: 8499 | Loss: 0.6660 | Accuracy: 0.923096 =====
+=====[Train] Iter: 8599 | Loss: 0.2656 | Accuracy: 0.988037 =====
+=====[Train] Iter: 8699 | Loss: 0.2164 | Accuracy: 0.992432 =====
+=====[Train] Iter: 8799 | Loss: 0.4530 | Accuracy: 0.956787 =====
+=====[Train] Iter: 8899 | Loss: 1.7949 | Accuracy: 0.767090 =====
+=====[Train] Iter: 8999 | Loss: 0.9033 | Accuracy: 0.864258 =====
+[Eval] Iter: 100 | Loss: 1.4716 | Acc: 0.82 | 2026-05-19 15:34:47.007324
+[Eval] Iter: 200 | Loss: 0.8055 | Acc: 0.90 | 2026-05-19 15:34:51.851805
+[Eval] Iter: 300 | Loss: 0.7337 | Acc: 0.96 | 2026-05-19 15:34:56.700705
+[Eval] Iter: 400 | Loss: 3.2064 | Acc: 0.47 | 2026-05-19 15:35:01.557763
+[Eval] Iter: 500 | Loss: 1.2541 | Acc: 0.86 | 2026-05-19 15:35:06.369191
+[Eval] Iter: 600 | Loss: 0.7927 | Acc: 0.95 | 2026-05-19 15:35:11.197500
+[Eval] Iter: 700 | Loss: 1.5235 | Acc: 0.77 | 2026-05-19 15:35:16.021099
+[Eval] Iter: 800 | Loss: 5.0645 | Acc: 0.41 | 2026-05-19 15:35:20.854189
+[Eval] Iter: 900 | Loss: 0.8098 | Acc: 0.91 | 2026-05-19 15:35:25.683192
+[Eval] Iter: 1000 | Loss: 0.8091 | Acc: 0.95 | 2026-05-19 15:35:30.502064
+[Eval] Iter: 1100 | Loss: 0.7598 | Acc: 0.92 | 2026-05-19 15:35:35.326295
+[Eval] Iter: 1200 | Loss: 0.6298 | Acc: 0.98 | 2026-05-19 15:35:40.164225
+[Eval] Iter: 1300 | Loss: 1.6957 | Acc: 0.86 | 2026-05-19 15:35:44.996297
+[Eval] Iter: 1400 | Loss: 0.8587 | Acc: 0.94 | 2026-05-19 15:35:49.808092
+[Eval] Iter: 1500 | Loss: 3.0911 | Acc: 0.81 | 2026-05-19 15:35:54.637160
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.802961 -----
+----- [class 1]  IoU: 0.837494 -----
+----- [class 2]  IoU: 0.773658 -----
+----- [class 3]  IoU: 0.844352 -----
+----- [class 4]  IoU: 0.739302 -----
+----- [class 5]  IoU: 0.638890 -----
+----- [class 6]  IoU: 0.841789 -----
+
+=====[VALID] Loss: 1.2131 | Mean IoU: 0.779247  =====
+=====Best valid IoU Is: 0.780806 =====
+
+=====[Train] Iter: 9099 | Loss: 0.2839 | Accuracy: 0.988525 =====
+=====[Train] Iter: 9199 | Loss: 0.5276 | Accuracy: 0.977783 =====
+=====[Train] Iter: 9299 | Loss: 0.1993 | Accuracy: 0.996338 =====
+=====[Train] Iter: 9399 | Loss: 0.2594 | Accuracy: 0.978271 =====
+=====[Train] Iter: 9499 | Loss: 1.0829 | Accuracy: 0.962402 =====
+=====[Train] Iter: 9599 | Loss: 0.3365 | Accuracy: 0.972168 =====
+=====[Train] Iter: 9699 | Loss: 0.2634 | Accuracy: 0.994629 =====
+=====[Train] Iter: 9799 | Loss: 1.0089 | Accuracy: 0.843262 =====
+=====[Train] Iter: 9899 | Loss: 0.2377 | Accuracy: 0.994629 =====
+=====[Train] Iter: 9999 | Loss: 0.3438 | Accuracy: 0.989990 =====
+[Eval] Iter: 100 | Loss: 1.3348 | Acc: 0.83 | 2026-05-19 15:38:48.964774
+[Eval] Iter: 200 | Loss: 1.0478 | Acc: 0.88 | 2026-05-19 15:38:53.802285
+[Eval] Iter: 300 | Loss: 0.6218 | Acc: 0.96 | 2026-05-19 15:38:58.631292
+[Eval] Iter: 400 | Loss: 3.0212 | Acc: 0.50 | 2026-05-19 15:39:03.457800
+[Eval] Iter: 500 | Loss: 1.3084 | Acc: 0.85 | 2026-05-19 15:39:08.274135
+[Eval] Iter: 600 | Loss: 0.7944 | Acc: 0.95 | 2026-05-19 15:39:13.104219
+[Eval] Iter: 700 | Loss: 1.5508 | Acc: 0.74 | 2026-05-19 15:39:17.921999
+[Eval] Iter: 800 | Loss: 5.4030 | Acc: 0.42 | 2026-05-19 15:39:22.745405
+[Eval] Iter: 900 | Loss: 0.7273 | Acc: 0.92 | 2026-05-19 15:39:27.576092
+[Eval] Iter: 1000 | Loss: 0.7099 | Acc: 0.95 | 2026-05-19 15:39:32.414431
+[Eval] Iter: 1100 | Loss: 0.6464 | Acc: 0.94 | 2026-05-19 15:39:37.381191
+[Eval] Iter: 1200 | Loss: 0.6169 | Acc: 0.97 | 2026-05-19 15:39:42.249339
+[Eval] Iter: 1300 | Loss: 1.5254 | Acc: 0.89 | 2026-05-19 15:39:47.112050
+[Eval] Iter: 1400 | Loss: 0.8049 | Acc: 0.95 | 2026-05-19 15:39:51.925447
+[Eval] Iter: 1500 | Loss: 2.6045 | Acc: 0.81 | 2026-05-19 15:39:56.751483
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.805299 -----
+----- [class 1]  IoU: 0.814362 -----
+----- [class 2]  IoU: 0.778866 -----
+----- [class 3]  IoU: 0.862066 -----
+----- [class 4]  IoU: 0.759732 -----
+----- [class 5]  IoU: 0.641559 -----
+----- [class 6]  IoU: 0.828693 -----
+
+=====[VALID] Loss: 1.1428 | Mean IoU: 0.780880  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.780880 =====
+
+=====[Train] Iter: 10099 | Loss: 0.5897 | Accuracy: 0.943604 =====
+=====[Train] Iter: 10199 | Loss: 0.5282 | Accuracy: 0.960938 =====
+=====[Train] Iter: 10299 | Loss: 1.0062 | Accuracy: 0.918945 =====
+=====[Train] Iter: 10399 | Loss: 0.9147 | Accuracy: 0.893066 =====
+=====[Train] Iter: 10499 | Loss: 0.3901 | Accuracy: 0.977051 =====
+=====[Train] Iter: 10599 | Loss: 0.2901 | Accuracy: 0.989990 =====
+=====[Train] Iter: 10699 | Loss: 0.3609 | Accuracy: 0.969238 =====
+=====[Train] Iter: 10799 | Loss: 0.7154 | Accuracy: 0.940674 =====
+=====[Train] Iter: 10899 | Loss: 0.2380 | Accuracy: 0.985840 =====
+=====[Train] Iter: 10999 | Loss: 0.1697 | Accuracy: 0.992676 =====
+[Eval] Iter: 100 | Loss: 1.4451 | Acc: 0.77 | 2026-05-19 15:42:51.114243
+[Eval] Iter: 200 | Loss: 1.2376 | Acc: 0.89 | 2026-05-19 15:42:55.964802
+[Eval] Iter: 300 | Loss: 0.5782 | Acc: 0.97 | 2026-05-19 15:43:00.807391
+[Eval] Iter: 400 | Loss: 2.8632 | Acc: 0.47 | 2026-05-19 15:43:05.643073
+[Eval] Iter: 500 | Loss: 1.2363 | Acc: 0.86 | 2026-05-19 15:43:10.472868
+[Eval] Iter: 600 | Loss: 0.7794 | Acc: 0.95 | 2026-05-19 15:43:15.303066
+[Eval] Iter: 700 | Loss: 1.8718 | Acc: 0.73 | 2026-05-19 15:43:20.130051
+[Eval] Iter: 800 | Loss: 4.9417 | Acc: 0.41 | 2026-05-19 15:43:24.957700
+[Eval] Iter: 900 | Loss: 0.8304 | Acc: 0.91 | 2026-05-19 15:43:29.791612
+[Eval] Iter: 1000 | Loss: 0.7045 | Acc: 0.96 | 2026-05-19 15:43:34.641747
+[Eval] Iter: 1100 | Loss: 0.6638 | Acc: 0.96 | 2026-05-19 15:43:39.469343
+[Eval] Iter: 1200 | Loss: 0.6116 | Acc: 0.98 | 2026-05-19 15:43:44.294935
+[Eval] Iter: 1300 | Loss: 1.8861 | Acc: 0.84 | 2026-05-19 15:43:49.132430
+[Eval] Iter: 1400 | Loss: 0.9432 | Acc: 0.91 | 2026-05-19 15:43:53.948429
+[Eval] Iter: 1500 | Loss: 2.6083 | Acc: 0.81 | 2026-05-19 15:43:58.756368
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.803987 -----
+----- [class 1]  IoU: 0.841082 -----
+----- [class 2]  IoU: 0.757407 -----
+----- [class 3]  IoU: 0.851257 -----
+----- [class 4]  IoU: 0.723598 -----
+----- [class 5]  IoU: 0.658685 -----
+----- [class 6]  IoU: 0.846917 -----
+
+=====[VALID] Loss: 1.1551 | Mean IoU: 0.779824  =====
+=====Best valid IoU Is: 0.780880 =====
+
+=====[Train] Iter: 11099 | Loss: 0.1390 | Accuracy: 0.991699 =====
+=====[Train] Iter: 11199 | Loss: 0.4486 | Accuracy: 0.949219 =====
+=====[Train] Iter: 11299 | Loss: 0.3135 | Accuracy: 0.981689 =====
+=====[Train] Iter: 11399 | Loss: 0.6416 | Accuracy: 0.952148 =====
+=====[Train] Iter: 11499 | Loss: 0.6645 | Accuracy: 0.938232 =====
+=====[Train] Iter: 11599 | Loss: 0.3412 | Accuracy: 0.976807 =====
+=====[Train] Iter: 11699 | Loss: 0.5962 | Accuracy: 0.961426 =====
+=====[Train] Iter: 11799 | Loss: 0.3695 | Accuracy: 0.975586 =====
+=====[Train] Iter: 11899 | Loss: 0.5185 | Accuracy: 0.977051 =====
+=====[Train] Iter: 11999 | Loss: 0.3642 | Accuracy: 0.965088 =====
+[Eval] Iter: 100 | Loss: 1.2478 | Acc: 0.88 | 2026-05-19 15:46:53.167423
+[Eval] Iter: 200 | Loss: 0.8238 | Acc: 0.90 | 2026-05-19 15:46:58.118491
+[Eval] Iter: 300 | Loss: 0.6256 | Acc: 0.97 | 2026-05-19 15:47:03.002410
+[Eval] Iter: 400 | Loss: 0.7959 | Acc: 0.93 | 2026-05-19 15:47:07.854146
+[Eval] Iter: 500 | Loss: 1.2650 | Acc: 0.85 | 2026-05-19 15:47:12.682876
+[Eval] Iter: 600 | Loss: 0.8246 | Acc: 0.95 | 2026-05-19 15:47:17.512897
+[Eval] Iter: 700 | Loss: 1.5927 | Acc: 0.75 | 2026-05-19 15:47:22.348055
+[Eval] Iter: 800 | Loss: 4.3597 | Acc: 0.46 | 2026-05-19 15:47:27.177275
+[Eval] Iter: 900 | Loss: 0.8129 | Acc: 0.91 | 2026-05-19 15:47:32.003696
+[Eval] Iter: 1000 | Loss: 0.7808 | Acc: 0.95 | 2026-05-19 15:47:36.813707
+[Eval] Iter: 1100 | Loss: 0.7560 | Acc: 0.93 | 2026-05-19 15:47:41.629194
+[Eval] Iter: 1200 | Loss: 0.5429 | Acc: 0.98 | 2026-05-19 15:47:46.451032
+[Eval] Iter: 1300 | Loss: 1.5405 | Acc: 0.86 | 2026-05-19 15:47:51.278111
+[Eval] Iter: 1400 | Loss: 0.9472 | Acc: 0.92 | 2026-05-19 15:47:56.091518
+[Eval] Iter: 1500 | Loss: 2.6793 | Acc: 0.81 | 2026-05-19 15:48:00.923558
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.807286 -----
+----- [class 1]  IoU: 0.840249 -----
+----- [class 2]  IoU: 0.780960 -----
+----- [class 3]  IoU: 0.843613 -----
+----- [class 4]  IoU: 0.728368 -----
+----- [class 5]  IoU: 0.672699 -----
+----- [class 6]  IoU: 0.847417 -----
+
+=====[VALID] Loss: 1.1323 | Mean IoU: 0.785551  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.785551 =====
+
+=====[Train] Iter: 12099 | Loss: 0.3837 | Accuracy: 0.977051 =====
+=====[Train] Iter: 12199 | Loss: 0.1772 | Accuracy: 0.992676 =====
+=====[Train] Iter: 12299 | Loss: 0.3195 | Accuracy: 0.993652 =====
+=====[Train] Iter: 12399 | Loss: 0.9197 | Accuracy: 0.894775 =====
+=====[Train] Iter: 12499 | Loss: 0.3675 | Accuracy: 0.973633 =====
+=====[Train] Iter: 12599 | Loss: 0.6120 | Accuracy: 0.945068 =====
+=====[Train] Iter: 12699 | Loss: 0.0946 | Accuracy: 0.992432 =====
+=====[Train] Iter: 12799 | Loss: 0.3283 | Accuracy: 0.994873 =====
+=====[Train] Iter: 12899 | Loss: 0.3893 | Accuracy: 0.960693 =====
+=====[Train] Iter: 12999 | Loss: 0.1861 | Accuracy: 0.993408 =====
+[Eval] Iter: 100 | Loss: 1.2209 | Acc: 0.81 | 2026-05-19 15:50:55.404640
+[Eval] Iter: 200 | Loss: 0.9079 | Acc: 0.90 | 2026-05-19 15:51:00.315055
+[Eval] Iter: 300 | Loss: 0.6075 | Acc: 0.96 | 2026-05-19 15:51:05.159979
+[Eval] Iter: 400 | Loss: 1.3381 | Acc: 0.80 | 2026-05-19 15:51:09.988216
+[Eval] Iter: 500 | Loss: 1.0344 | Acc: 0.87 | 2026-05-19 15:51:14.814419
+[Eval] Iter: 600 | Loss: 1.0057 | Acc: 0.96 | 2026-05-19 15:51:19.636429
+[Eval] Iter: 700 | Loss: 1.9651 | Acc: 0.74 | 2026-05-19 15:51:24.467824
+[Eval] Iter: 800 | Loss: 4.0986 | Acc: 0.41 | 2026-05-19 15:51:29.352922
+[Eval] Iter: 900 | Loss: 0.8127 | Acc: 0.91 | 2026-05-19 15:51:34.183325
+[Eval] Iter: 1000 | Loss: 0.7872 | Acc: 0.96 | 2026-05-19 15:51:39.001985
+[Eval] Iter: 1100 | Loss: 0.6598 | Acc: 0.95 | 2026-05-19 15:51:43.841561
+[Eval] Iter: 1200 | Loss: 0.5108 | Acc: 0.98 | 2026-05-19 15:51:48.678554
+[Eval] Iter: 1300 | Loss: 1.4827 | Acc: 0.91 | 2026-05-19 15:51:53.510259
+[Eval] Iter: 1400 | Loss: 0.8077 | Acc: 0.94 | 2026-05-19 15:51:58.372613
+[Eval] Iter: 1500 | Loss: 2.7362 | Acc: 0.80 | 2026-05-19 15:52:03.198670
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.808853 -----
+----- [class 1]  IoU: 0.810101 -----
+----- [class 2]  IoU: 0.772157 -----
+----- [class 3]  IoU: 0.831155 -----
+----- [class 4]  IoU: 0.731212 -----
+----- [class 5]  IoU: 0.654434 -----
+----- [class 6]  IoU: 0.816628 -----
+
+=====[VALID] Loss: 1.2149 | Mean IoU: 0.769281  =====
+=====Best valid IoU Is: 0.785551 =====
+
+=====[Train] Iter: 13099 | Loss: 0.2964 | Accuracy: 0.974365 =====
+=====[Train] Iter: 13199 | Loss: 0.3414 | Accuracy: 0.975098 =====
+=====[Train] Iter: 13299 | Loss: 0.5239 | Accuracy: 0.969971 =====
+=====[Train] Iter: 13399 | Loss: 1.3961 | Accuracy: 0.828857 =====
+=====[Train] Iter: 13499 | Loss: 0.6362 | Accuracy: 0.938965 =====
+=====[Train] Iter: 13599 | Loss: 0.4875 | Accuracy: 0.945801 =====
+=====[Train] Iter: 13699 | Loss: 0.3392 | Accuracy: 0.976562 =====
+=====[Train] Iter: 13799 | Loss: 0.4587 | Accuracy: 0.977295 =====
+=====[Train] Iter: 13899 | Loss: 0.2965 | Accuracy: 0.985107 =====
+=====[Train] Iter: 13999 | Loss: 0.4334 | Accuracy: 0.988281 =====
+[Eval] Iter: 100 | Loss: 1.1136 | Acc: 0.88 | 2026-05-19 15:54:57.127620
+[Eval] Iter: 200 | Loss: 0.7941 | Acc: 0.92 | 2026-05-19 15:55:01.946665
+[Eval] Iter: 300 | Loss: 0.6774 | Acc: 0.97 | 2026-05-19 15:55:06.772945
+[Eval] Iter: 400 | Loss: 1.5293 | Acc: 0.68 | 2026-05-19 15:55:11.596558
+[Eval] Iter: 500 | Loss: 1.2377 | Acc: 0.84 | 2026-05-19 15:55:16.430214
+[Eval] Iter: 600 | Loss: 0.8659 | Acc: 0.97 | 2026-05-19 15:55:21.259915
+[Eval] Iter: 700 | Loss: 1.9490 | Acc: 0.79 | 2026-05-19 15:55:26.063739
+[Eval] Iter: 800 | Loss: 2.7993 | Acc: 0.44 | 2026-05-19 15:55:30.891529
+[Eval] Iter: 900 | Loss: 0.9371 | Acc: 0.92 | 2026-05-19 15:55:35.706428
+[Eval] Iter: 1000 | Loss: 0.6302 | Acc: 0.97 | 2026-05-19 15:55:40.517828
+[Eval] Iter: 1100 | Loss: 0.6732 | Acc: 0.95 | 2026-05-19 15:55:45.332771
+[Eval] Iter: 1200 | Loss: 0.5804 | Acc: 0.97 | 2026-05-19 15:55:50.165939
+[Eval] Iter: 1300 | Loss: 1.5418 | Acc: 0.87 | 2026-05-19 15:55:55.011228
+[Eval] Iter: 1400 | Loss: 0.8857 | Acc: 0.95 | 2026-05-19 15:55:59.951624
+[Eval] Iter: 1500 | Loss: 2.7466 | Acc: 0.80 | 2026-05-19 15:56:04.824988
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.812848 -----
+----- [class 1]  IoU: 0.849508 -----
+----- [class 2]  IoU: 0.783427 -----
+----- [class 3]  IoU: 0.855813 -----
+----- [class 4]  IoU: 0.730387 -----
+----- [class 5]  IoU: 0.686304 -----
+----- [class 6]  IoU: 0.838438 -----
+
+=====[VALID] Loss: 1.1205 | Mean IoU: 0.790646  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 14099 | Loss: 0.3363 | Accuracy: 0.972656 =====
+=====[Train] Iter: 14199 | Loss: 0.3447 | Accuracy: 0.980713 =====
+=====[Train] Iter: 14299 | Loss: 0.2622 | Accuracy: 0.986572 =====
+=====[Train] Iter: 14399 | Loss: 0.3414 | Accuracy: 0.984375 =====
+=====[Train] Iter: 14499 | Loss: 0.4950 | Accuracy: 0.958740 =====
+=====[Train] Iter: 14599 | Loss: 0.7271 | Accuracy: 0.974854 =====
+=====[Train] Iter: 14699 | Loss: 0.3703 | Accuracy: 0.983154 =====
+=====[Train] Iter: 14799 | Loss: 0.4085 | Accuracy: 0.974854 =====
+=====[Train] Iter: 14899 | Loss: 0.4905 | Accuracy: 0.952881 =====
+=====[Train] Iter: 14999 | Loss: 0.1968 | Accuracy: 0.989990 =====
+[Eval] Iter: 100 | Loss: 1.4968 | Acc: 0.77 | 2026-05-19 15:58:58.832663
+[Eval] Iter: 200 | Loss: 0.9461 | Acc: 0.89 | 2026-05-19 15:59:03.743085
+[Eval] Iter: 300 | Loss: 0.8118 | Acc: 0.96 | 2026-05-19 15:59:08.604032
+[Eval] Iter: 400 | Loss: 3.1788 | Acc: 0.49 | 2026-05-19 15:59:13.458463
+[Eval] Iter: 500 | Loss: 1.1713 | Acc: 0.86 | 2026-05-19 15:59:18.286133
+[Eval] Iter: 600 | Loss: 1.0063 | Acc: 0.94 | 2026-05-19 15:59:23.128715
+[Eval] Iter: 700 | Loss: 1.7795 | Acc: 0.78 | 2026-05-19 15:59:27.928454
+[Eval] Iter: 800 | Loss: 3.9148 | Acc: 0.43 | 2026-05-19 15:59:32.773233
+[Eval] Iter: 900 | Loss: 0.7204 | Acc: 0.92 | 2026-05-19 15:59:37.623430
+[Eval] Iter: 1000 | Loss: 1.0174 | Acc: 0.90 | 2026-05-19 15:59:42.438608
+[Eval] Iter: 1100 | Loss: 0.5808 | Acc: 0.95 | 2026-05-19 15:59:47.262615
+[Eval] Iter: 1200 | Loss: 0.5189 | Acc: 0.98 | 2026-05-19 15:59:52.084464
+[Eval] Iter: 1300 | Loss: 1.8576 | Acc: 0.86 | 2026-05-19 15:59:56.907727
+[Eval] Iter: 1400 | Loss: 0.8010 | Acc: 0.94 | 2026-05-19 16:00:01.729053
+[Eval] Iter: 1500 | Loss: 2.9462 | Acc: 0.81 | 2026-05-19 16:00:06.573306
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.800025 -----
+----- [class 1]  IoU: 0.833242 -----
+----- [class 2]  IoU: 0.770106 -----
+----- [class 3]  IoU: 0.811369 -----
+----- [class 4]  IoU: 0.693573 -----
+----- [class 5]  IoU: 0.662405 -----
+----- [class 6]  IoU: 0.830308 -----
+
+=====[VALID] Loss: 1.2331 | Mean IoU: 0.766834  =====
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 15099 | Loss: 0.3159 | Accuracy: 0.982666 =====
+=====[Train] Iter: 15199 | Loss: 1.3219 | Accuracy: 0.846436 =====
+=====[Train] Iter: 15299 | Loss: 0.4801 | Accuracy: 0.968018 =====
+=====[Train] Iter: 15399 | Loss: 0.3169 | Accuracy: 0.980469 =====
+=====[Train] Iter: 15499 | Loss: 0.3412 | Accuracy: 0.976807 =====
+=====[Train] Iter: 15599 | Loss: 0.3644 | Accuracy: 0.991211 =====
+=====[Train] Iter: 15699 | Loss: 0.5904 | Accuracy: 0.958252 =====
+=====[Train] Iter: 15799 | Loss: 0.5971 | Accuracy: 0.900879 =====
+=====[Train] Iter: 15899 | Loss: 0.6107 | Accuracy: 0.947510 =====
+=====[Train] Iter: 15999 | Loss: 0.1362 | Accuracy: 0.994873 =====
+[Eval] Iter: 100 | Loss: 1.4330 | Acc: 0.78 | 2026-05-19 16:03:01.029965
+[Eval] Iter: 200 | Loss: 1.0659 | Acc: 0.90 | 2026-05-19 16:03:05.862062
+[Eval] Iter: 300 | Loss: 0.5484 | Acc: 0.97 | 2026-05-19 16:03:10.731561
+[Eval] Iter: 400 | Loss: 2.6683 | Acc: 0.48 | 2026-05-19 16:03:15.578598
+[Eval] Iter: 500 | Loss: 0.9192 | Acc: 0.91 | 2026-05-19 16:03:20.391605
+[Eval] Iter: 600 | Loss: 0.8265 | Acc: 0.95 | 2026-05-19 16:03:25.204987
+[Eval] Iter: 700 | Loss: 2.2184 | Acc: 0.74 | 2026-05-19 16:03:30.013566
+[Eval] Iter: 800 | Loss: 5.3319 | Acc: 0.41 | 2026-05-19 16:03:34.841314
+[Eval] Iter: 900 | Loss: 0.9569 | Acc: 0.89 | 2026-05-19 16:03:39.655107
+[Eval] Iter: 1000 | Loss: 0.6626 | Acc: 0.97 | 2026-05-19 16:03:44.465113
+[Eval] Iter: 1100 | Loss: 0.5958 | Acc: 0.95 | 2026-05-19 16:03:49.294867
+[Eval] Iter: 1200 | Loss: 0.5929 | Acc: 0.98 | 2026-05-19 16:03:54.111319
+[Eval] Iter: 1300 | Loss: 1.6487 | Acc: 0.85 | 2026-05-19 16:03:58.933416
+[Eval] Iter: 1400 | Loss: 0.8232 | Acc: 0.95 | 2026-05-19 16:04:03.759238
+[Eval] Iter: 1500 | Loss: 2.3920 | Acc: 0.80 | 2026-05-19 16:04:08.568114
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.798692 -----
+----- [class 1]  IoU: 0.857058 -----
+----- [class 2]  IoU: 0.748151 -----
+----- [class 3]  IoU: 0.851859 -----
+----- [class 4]  IoU: 0.729887 -----
+----- [class 5]  IoU: 0.642758 -----
+----- [class 6]  IoU: 0.830923 -----
+
+=====[VALID] Loss: 1.1832 | Mean IoU: 0.776773  =====
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 16099 | Loss: 0.4164 | Accuracy: 0.955322 =====
+=====[Train] Iter: 16199 | Loss: 0.5557 | Accuracy: 0.985352 =====
+=====[Train] Iter: 16299 | Loss: 0.8625 | Accuracy: 0.923584 =====
+=====[Train] Iter: 16399 | Loss: 0.2198 | Accuracy: 0.989990 =====
+=====[Train] Iter: 16499 | Loss: 0.1774 | Accuracy: 0.985840 =====
+=====[Train] Iter: 16599 | Loss: 0.2985 | Accuracy: 0.987793 =====
+=====[Train] Iter: 16699 | Loss: 0.2566 | Accuracy: 0.988037 =====
+=====[Train] Iter: 16799 | Loss: 0.3232 | Accuracy: 0.988525 =====
+=====[Train] Iter: 16899 | Loss: 0.1786 | Accuracy: 0.993896 =====
+=====[Train] Iter: 16999 | Loss: 0.1932 | Accuracy: 0.989746 =====
+[Eval] Iter: 100 | Loss: 1.3825 | Acc: 0.78 | 2026-05-19 16:07:03.132240
+[Eval] Iter: 200 | Loss: 1.0245 | Acc: 0.90 | 2026-05-19 16:07:07.955526
+[Eval] Iter: 300 | Loss: 0.7710 | Acc: 0.97 | 2026-05-19 16:07:12.787782
+[Eval] Iter: 400 | Loss: 3.4078 | Acc: 0.44 | 2026-05-19 16:07:17.613375
+[Eval] Iter: 500 | Loss: 1.2785 | Acc: 0.87 | 2026-05-19 16:07:22.424404
+[Eval] Iter: 600 | Loss: 1.1781 | Acc: 0.92 | 2026-05-19 16:07:27.234050
+[Eval] Iter: 700 | Loss: 2.3579 | Acc: 0.73 | 2026-05-19 16:07:32.033213
+[Eval] Iter: 800 | Loss: 4.3663 | Acc: 0.42 | 2026-05-19 16:07:36.843903
+[Eval] Iter: 900 | Loss: 0.8313 | Acc: 0.91 | 2026-05-19 16:07:41.659087
+[Eval] Iter: 1000 | Loss: 0.6095 | Acc: 0.97 | 2026-05-19 16:07:46.468472
+[Eval] Iter: 1100 | Loss: 0.5764 | Acc: 0.96 | 2026-05-19 16:07:51.290485
+[Eval] Iter: 1200 | Loss: 0.5359 | Acc: 0.98 | 2026-05-19 16:07:56.096489
+[Eval] Iter: 1300 | Loss: 1.4804 | Acc: 0.89 | 2026-05-19 16:08:00.913543
+[Eval] Iter: 1400 | Loss: 0.7821 | Acc: 0.94 | 2026-05-19 16:08:05.725169
+[Eval] Iter: 1500 | Loss: 3.1015 | Acc: 0.80 | 2026-05-19 16:08:10.536020
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.801735 -----
+----- [class 1]  IoU: 0.843623 -----
+----- [class 2]  IoU: 0.749137 -----
+----- [class 3]  IoU: 0.826527 -----
+----- [class 4]  IoU: 0.703040 -----
+----- [class 5]  IoU: 0.664223 -----
+----- [class 6]  IoU: 0.843709 -----
+
+=====[VALID] Loss: 1.2195 | Mean IoU: 0.771710  =====
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 17099 | Loss: 0.1067 | Accuracy: 0.997559 =====
+=====[Train] Iter: 17199 | Loss: 0.4350 | Accuracy: 0.959961 =====
+=====[Train] Iter: 17299 | Loss: 0.4257 | Accuracy: 0.964600 =====
+=====[Train] Iter: 17399 | Loss: 0.2702 | Accuracy: 0.977783 =====
+=====[Train] Iter: 17499 | Loss: 0.3613 | Accuracy: 0.988281 =====
+=====[Train] Iter: 17599 | Loss: 0.5715 | Accuracy: 0.942139 =====
+=====[Train] Iter: 17699 | Loss: 0.2092 | Accuracy: 0.986816 =====
+=====[Train] Iter: 17799 | Loss: 0.5857 | Accuracy: 0.965332 =====
+=====[Train] Iter: 17899 | Loss: 0.3659 | Accuracy: 0.985107 =====
+=====[Train] Iter: 17999 | Loss: 0.4344 | Accuracy: 0.972656 =====
+[Eval] Iter: 100 | Loss: 1.2391 | Acc: 0.78 | 2026-05-19 16:11:05.233049
+[Eval] Iter: 200 | Loss: 0.8369 | Acc: 0.91 | 2026-05-19 16:11:10.077167
+[Eval] Iter: 300 | Loss: 0.6546 | Acc: 0.97 | 2026-05-19 16:11:14.905221
+[Eval] Iter: 400 | Loss: 3.8183 | Acc: 0.44 | 2026-05-19 16:11:19.712965
+[Eval] Iter: 500 | Loss: 1.1362 | Acc: 0.86 | 2026-05-19 16:11:24.535220
+[Eval] Iter: 600 | Loss: 1.1132 | Acc: 0.92 | 2026-05-19 16:11:29.423913
+[Eval] Iter: 700 | Loss: 2.1229 | Acc: 0.77 | 2026-05-19 16:11:34.237955
+[Eval] Iter: 800 | Loss: 4.3448 | Acc: 0.45 | 2026-05-19 16:11:39.054278
+[Eval] Iter: 900 | Loss: 0.7683 | Acc: 0.91 | 2026-05-19 16:11:43.876045
+[Eval] Iter: 1000 | Loss: 0.7056 | Acc: 0.97 | 2026-05-19 16:11:48.685890
+[Eval] Iter: 1100 | Loss: 0.6289 | Acc: 0.95 | 2026-05-19 16:11:53.507361
+[Eval] Iter: 1200 | Loss: 0.4599 | Acc: 0.98 | 2026-05-19 16:11:58.392976
+[Eval] Iter: 1300 | Loss: 1.4175 | Acc: 0.88 | 2026-05-19 16:12:03.255630
+[Eval] Iter: 1400 | Loss: 0.7659 | Acc: 0.94 | 2026-05-19 16:12:08.085366
+[Eval] Iter: 1500 | Loss: 2.8717 | Acc: 0.80 | 2026-05-19 16:12:12.899034
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.799248 -----
+----- [class 1]  IoU: 0.843602 -----
+----- [class 2]  IoU: 0.759478 -----
+----- [class 3]  IoU: 0.823299 -----
+----- [class 4]  IoU: 0.709916 -----
+----- [class 5]  IoU: 0.676103 -----
+----- [class 6]  IoU: 0.841929 -----
+
+=====[VALID] Loss: 1.1617 | Mean IoU: 0.775721  =====
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 18099 | Loss: 0.4751 | Accuracy: 0.961426 =====
+=====[Train] Iter: 18199 | Loss: 0.4224 | Accuracy: 0.988281 =====
+=====[Train] Iter: 18299 | Loss: 0.2484 | Accuracy: 0.984375 =====
+=====[Train] Iter: 18399 | Loss: 0.2569 | Accuracy: 0.984375 =====
+=====[Train] Iter: 18499 | Loss: 0.8672 | Accuracy: 0.930176 =====
+=====[Train] Iter: 18599 | Loss: 0.1787 | Accuracy: 0.987305 =====
+=====[Train] Iter: 18699 | Loss: 0.4396 | Accuracy: 0.966064 =====
+=====[Train] Iter: 18799 | Loss: 1.1103 | Accuracy: 0.924805 =====
+=====[Train] Iter: 18899 | Loss: 0.2987 | Accuracy: 0.981689 =====
+=====[Train] Iter: 18999 | Loss: 0.3486 | Accuracy: 0.989502 =====
+[Eval] Iter: 100 | Loss: 1.6428 | Acc: 0.78 | 2026-05-19 16:15:09.982413
+[Eval] Iter: 200 | Loss: 0.7299 | Acc: 0.95 | 2026-05-19 16:15:14.867508
+[Eval] Iter: 300 | Loss: 0.5661 | Acc: 0.97 | 2026-05-19 16:15:19.681986
+[Eval] Iter: 400 | Loss: 3.3504 | Acc: 0.45 | 2026-05-19 16:15:24.594865
+[Eval] Iter: 500 | Loss: 0.8589 | Acc: 0.92 | 2026-05-19 16:15:29.531922
+[Eval] Iter: 600 | Loss: 0.9550 | Acc: 0.94 | 2026-05-19 16:15:34.356068
+[Eval] Iter: 700 | Loss: 2.3375 | Acc: 0.71 | 2026-05-19 16:15:39.169977
+[Eval] Iter: 800 | Loss: 4.2788 | Acc: 0.44 | 2026-05-19 16:15:44.002555
+[Eval] Iter: 900 | Loss: 0.8375 | Acc: 0.91 | 2026-05-19 16:15:48.814803
+[Eval] Iter: 1000 | Loss: 0.5626 | Acc: 0.97 | 2026-05-19 16:15:53.623139
+[Eval] Iter: 1100 | Loss: 0.5980 | Acc: 0.95 | 2026-05-19 16:15:58.644510
+[Eval] Iter: 1200 | Loss: 0.4676 | Acc: 0.98 | 2026-05-19 16:16:03.500960
+[Eval] Iter: 1300 | Loss: 1.1927 | Acc: 0.91 | 2026-05-19 16:16:08.341044
+[Eval] Iter: 1400 | Loss: 0.7534 | Acc: 0.95 | 2026-05-19 16:16:13.152398
+[Eval] Iter: 1500 | Loss: 3.0164 | Acc: 0.80 | 2026-05-19 16:16:17.970322
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.808433 -----
+----- [class 1]  IoU: 0.838596 -----
+----- [class 2]  IoU: 0.763107 -----
+----- [class 3]  IoU: 0.845186 -----
+----- [class 4]  IoU: 0.732201 -----
+----- [class 5]  IoU: 0.675294 -----
+----- [class 6]  IoU: 0.833630 -----
+
+=====[VALID] Loss: 1.1969 | Mean IoU: 0.781336  =====
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 19099 | Loss: 0.3726 | Accuracy: 0.986084 =====
+=====[Train] Iter: 19199 | Loss: 0.2224 | Accuracy: 0.995605 =====
+=====[Train] Iter: 19299 | Loss: 0.1958 | Accuracy: 0.996338 =====
+=====[Train] Iter: 19399 | Loss: 0.5468 | Accuracy: 0.958496 =====
+=====[Train] Iter: 19499 | Loss: 0.4112 | Accuracy: 0.976807 =====
+=====[Train] Iter: 19599 | Loss: 0.1739 | Accuracy: 0.991943 =====
+=====[Train] Iter: 19699 | Loss: 0.1594 | Accuracy: 0.997070 =====
+=====[Train] Iter: 19799 | Loss: 0.2626 | Accuracy: 0.984619 =====
+=====[Train] Iter: 19899 | Loss: 0.5626 | Accuracy: 0.941406 =====
+=====[Train] Iter: 19999 | Loss: 0.1347 | Accuracy: 0.997314 =====
+[Eval] Iter: 100 | Loss: 1.6645 | Acc: 0.78 | 2026-05-19 16:19:12.767830
+[Eval] Iter: 200 | Loss: 0.7995 | Acc: 0.91 | 2026-05-19 16:19:17.634512
+[Eval] Iter: 300 | Loss: 0.7114 | Acc: 0.97 | 2026-05-19 16:19:22.501457
+[Eval] Iter: 400 | Loss: 2.8952 | Acc: 0.46 | 2026-05-19 16:19:27.398273
+[Eval] Iter: 500 | Loss: 1.1026 | Acc: 0.87 | 2026-05-19 16:19:32.256567
+[Eval] Iter: 600 | Loss: 1.1031 | Acc: 0.94 | 2026-05-19 16:19:37.129505
+[Eval] Iter: 700 | Loss: 2.4118 | Acc: 0.77 | 2026-05-19 16:19:41.964922
+[Eval] Iter: 800 | Loss: 4.2258 | Acc: 0.49 | 2026-05-19 16:19:46.783439
+[Eval] Iter: 900 | Loss: 0.7266 | Acc: 0.91 | 2026-05-19 16:19:51.615815
+[Eval] Iter: 1000 | Loss: 0.9587 | Acc: 0.90 | 2026-05-19 16:19:56.427241
+[Eval] Iter: 1100 | Loss: 0.6099 | Acc: 0.94 | 2026-05-19 16:20:01.263283
+[Eval] Iter: 1200 | Loss: 0.5000 | Acc: 0.98 | 2026-05-19 16:20:06.143012
+[Eval] Iter: 1300 | Loss: 1.3447 | Acc: 0.87 | 2026-05-19 16:20:10.974520
+[Eval] Iter: 1400 | Loss: 0.8129 | Acc: 0.94 | 2026-05-19 16:20:15.790827
+[Eval] Iter: 1500 | Loss: 2.7393 | Acc: 0.76 | 2026-05-19 16:20:20.613274
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.802748 -----
+----- [class 1]  IoU: 0.830326 -----
+----- [class 2]  IoU: 0.762297 -----
+----- [class 3]  IoU: 0.811303 -----
+----- [class 4]  IoU: 0.701275 -----
+----- [class 5]  IoU: 0.676746 -----
+----- [class 6]  IoU: 0.807769 -----
+
+=====[VALID] Loss: 1.1747 | Mean IoU: 0.764953  =====
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 20099 | Loss: 0.5674 | Accuracy: 0.954346 =====
+=====[Train] Iter: 20199 | Loss: 0.6202 | Accuracy: 0.974609 =====
+=====[Train] Iter: 20299 | Loss: 0.1769 | Accuracy: 0.990479 =====
+=====[Train] Iter: 20399 | Loss: 0.4654 | Accuracy: 0.983887 =====
+=====[Train] Iter: 20499 | Loss: 0.5346 | Accuracy: 0.979736 =====
+=====[Train] Iter: 20599 | Loss: 0.3838 | Accuracy: 0.973145 =====
+=====[Train] Iter: 20699 | Loss: 0.4314 | Accuracy: 0.981934 =====
+=====[Train] Iter: 20799 | Loss: 0.3445 | Accuracy: 0.971680 =====
+=====[Train] Iter: 20899 | Loss: 0.3355 | Accuracy: 0.980713 =====
+=====[Train] Iter: 20999 | Loss: 0.5119 | Accuracy: 0.968262 =====
+[Eval] Iter: 100 | Loss: 1.3592 | Acc: 0.79 | 2026-05-19 16:23:14.925964
+[Eval] Iter: 200 | Loss: 0.7651 | Acc: 0.91 | 2026-05-19 16:23:19.749296
+[Eval] Iter: 300 | Loss: 0.5675 | Acc: 0.97 | 2026-05-19 16:23:24.589996
+[Eval] Iter: 400 | Loss: 2.7603 | Acc: 0.47 | 2026-05-19 16:23:29.406632
+[Eval] Iter: 500 | Loss: 1.1555 | Acc: 0.87 | 2026-05-19 16:23:34.229875
+[Eval] Iter: 600 | Loss: 0.8647 | Acc: 0.97 | 2026-05-19 16:23:39.063777
+[Eval] Iter: 700 | Loss: 2.0498 | Acc: 0.79 | 2026-05-19 16:23:43.882663
+[Eval] Iter: 800 | Loss: 4.5227 | Acc: 0.43 | 2026-05-19 16:23:48.716516
+[Eval] Iter: 900 | Loss: 0.8489 | Acc: 0.90 | 2026-05-19 16:23:53.539213
+[Eval] Iter: 1000 | Loss: 0.5356 | Acc: 0.97 | 2026-05-19 16:23:58.359501
+[Eval] Iter: 1100 | Loss: 0.7226 | Acc: 0.92 | 2026-05-19 16:24:03.186067
+[Eval] Iter: 1200 | Loss: 0.4531 | Acc: 0.98 | 2026-05-19 16:24:08.056869
+[Eval] Iter: 1300 | Loss: 1.2181 | Acc: 0.90 | 2026-05-19 16:24:12.955173
+[Eval] Iter: 1400 | Loss: 0.7779 | Acc: 0.95 | 2026-05-19 16:24:17.771675
+[Eval] Iter: 1500 | Loss: 2.6533 | Acc: 0.80 | 2026-05-19 16:24:22.579881
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.811554 -----
+----- [class 1]  IoU: 0.835729 -----
+----- [class 2]  IoU: 0.748257 -----
+----- [class 3]  IoU: 0.855837 -----
+----- [class 4]  IoU: 0.753874 -----
+----- [class 5]  IoU: 0.681932 -----
+----- [class 6]  IoU: 0.843928 -----
+
+=====[VALID] Loss: 1.1095 | Mean IoU: 0.786593  =====
+=====Best valid IoU Is: 0.790646 =====
+
+=====[Train] Iter: 21099 | Loss: 0.3505 | Accuracy: 0.969971 =====
+=====[Train] Iter: 21199 | Loss: 0.1465 | Accuracy: 0.989258 =====
+=====[Train] Iter: 21299 | Loss: 0.4313 | Accuracy: 0.967285 =====
+=====[Train] Iter: 21399 | Loss: 0.7037 | Accuracy: 0.956299 =====
+=====[Train] Iter: 21499 | Loss: 0.1760 | Accuracy: 0.984619 =====
+=====[Train] Iter: 21599 | Loss: 0.2462 | Accuracy: 0.985352 =====
+=====[Train] Iter: 21699 | Loss: 0.4561 | Accuracy: 0.950684 =====
+=====[Train] Iter: 21799 | Loss: 0.1651 | Accuracy: 0.987549 =====
+=====[Train] Iter: 21899 | Loss: 0.5124 | Accuracy: 0.963379 =====
+=====[Train] Iter: 21999 | Loss: 0.1804 | Accuracy: 0.991455 =====
+[Eval] Iter: 100 | Loss: 1.2417 | Acc: 0.78 | 2026-05-19 16:27:17.050860
+[Eval] Iter: 200 | Loss: 0.8234 | Acc: 0.91 | 2026-05-19 16:27:21.876281
+[Eval] Iter: 300 | Loss: 0.5499 | Acc: 0.97 | 2026-05-19 16:27:26.740531
+[Eval] Iter: 400 | Loss: 2.0162 | Acc: 0.61 | 2026-05-19 16:27:31.593033
+[Eval] Iter: 500 | Loss: 1.0681 | Acc: 0.88 | 2026-05-19 16:27:36.389757
+[Eval] Iter: 600 | Loss: 0.7180 | Acc: 0.95 | 2026-05-19 16:27:41.182041
+[Eval] Iter: 700 | Loss: 2.1480 | Acc: 0.76 | 2026-05-19 16:27:45.991360
+[Eval] Iter: 800 | Loss: 3.0729 | Acc: 0.50 | 2026-05-19 16:27:50.803242
+[Eval] Iter: 900 | Loss: 0.7307 | Acc: 0.91 | 2026-05-19 16:27:55.616535
+[Eval] Iter: 1000 | Loss: 0.6258 | Acc: 0.97 | 2026-05-19 16:28:00.412357
+[Eval] Iter: 1100 | Loss: 0.5845 | Acc: 0.96 | 2026-05-19 16:28:05.215933
+[Eval] Iter: 1200 | Loss: 0.5637 | Acc: 0.97 | 2026-05-19 16:28:10.038866
+[Eval] Iter: 1300 | Loss: 1.2748 | Acc: 0.90 | 2026-05-19 16:28:14.876966
+[Eval] Iter: 1400 | Loss: 0.7484 | Acc: 0.94 | 2026-05-19 16:28:19.788895
+[Eval] Iter: 1500 | Loss: 2.1705 | Acc: 0.80 | 2026-05-19 16:28:24.629229
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.817253 -----
+----- [class 1]  IoU: 0.841447 -----
+----- [class 2]  IoU: 0.767017 -----
+----- [class 3]  IoU: 0.854925 -----
+----- [class 4]  IoU: 0.755721 -----
+----- [class 5]  IoU: 0.688536 -----
+----- [class 6]  IoU: 0.840314 -----
+
+=====[VALID] Loss: 1.1029 | Mean IoU: 0.791327  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.791327 =====
+
+=====[Train] Iter: 22099 | Loss: 0.4049 | Accuracy: 0.967529 =====
+=====[Train] Iter: 22199 | Loss: 0.4835 | Accuracy: 0.949707 =====
+=====[Train] Iter: 22299 | Loss: 0.4023 | Accuracy: 0.989990 =====
+=====[Train] Iter: 22399 | Loss: 0.4097 | Accuracy: 0.990234 =====
+=====[Train] Iter: 22499 | Loss: 0.6484 | Accuracy: 0.944336 =====
+=====[Train] Iter: 22599 | Loss: 0.2701 | Accuracy: 0.988770 =====
+=====[Train] Iter: 22699 | Loss: 0.5498 | Accuracy: 0.972900 =====
+=====[Train] Iter: 22799 | Loss: 0.2585 | Accuracy: 0.981689 =====
+=====[Train] Iter: 22899 | Loss: 0.3443 | Accuracy: 0.986572 =====
+=====[Train] Iter: 22999 | Loss: 0.4394 | Accuracy: 0.979736 =====
+[Eval] Iter: 100 | Loss: 1.3830 | Acc: 0.77 | 2026-05-19 16:31:18.401578
+[Eval] Iter: 200 | Loss: 0.9584 | Acc: 0.89 | 2026-05-19 16:31:23.223271
+[Eval] Iter: 300 | Loss: 0.5640 | Acc: 0.97 | 2026-05-19 16:31:28.164149
+[Eval] Iter: 400 | Loss: 1.2417 | Acc: 0.80 | 2026-05-19 16:31:32.978543
+[Eval] Iter: 500 | Loss: 1.0431 | Acc: 0.88 | 2026-05-19 16:31:37.803250
+[Eval] Iter: 600 | Loss: 0.6951 | Acc: 0.95 | 2026-05-19 16:31:42.622487
+[Eval] Iter: 700 | Loss: 1.5083 | Acc: 0.76 | 2026-05-19 16:31:47.424472
+[Eval] Iter: 800 | Loss: 4.7810 | Acc: 0.43 | 2026-05-19 16:31:52.292018
+[Eval] Iter: 900 | Loss: 0.8223 | Acc: 0.90 | 2026-05-19 16:31:57.171372
+[Eval] Iter: 1000 | Loss: 0.7196 | Acc: 0.96 | 2026-05-19 16:32:01.988020
+[Eval] Iter: 1100 | Loss: 0.6962 | Acc: 0.93 | 2026-05-19 16:32:06.810428
+[Eval] Iter: 1200 | Loss: 0.4945 | Acc: 0.98 | 2026-05-19 16:32:11.629443
+[Eval] Iter: 1300 | Loss: 1.2588 | Acc: 0.87 | 2026-05-19 16:32:16.449119
+[Eval] Iter: 1400 | Loss: 0.7942 | Acc: 0.94 | 2026-05-19 16:32:21.273876
+[Eval] Iter: 1500 | Loss: 2.5122 | Acc: 0.80 | 2026-05-19 16:32:26.094586
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.811170 -----
+----- [class 1]  IoU: 0.844544 -----
+----- [class 2]  IoU: 0.762421 -----
+----- [class 3]  IoU: 0.844277 -----
+----- [class 4]  IoU: 0.737061 -----
+----- [class 5]  IoU: 0.685517 -----
+----- [class 6]  IoU: 0.845214 -----
+
+=====[VALID] Loss: 1.1141 | Mean IoU: 0.786506  =====
+=====Best valid IoU Is: 0.791327 =====
+
+=====[Train] Iter: 23099 | Loss: 0.1162 | Accuracy: 0.994141 =====
+=====[Train] Iter: 23199 | Loss: 0.8903 | Accuracy: 0.875488 =====
+=====[Train] Iter: 23299 | Loss: 0.2980 | Accuracy: 0.974609 =====
+=====[Train] Iter: 23399 | Loss: 0.1347 | Accuracy: 0.992188 =====
+=====[Train] Iter: 23499 | Loss: 0.2070 | Accuracy: 0.991455 =====
+=====[Train] Iter: 23599 | Loss: 0.2601 | Accuracy: 0.977295 =====
+=====[Train] Iter: 23699 | Loss: 0.9664 | Accuracy: 0.916992 =====
+=====[Train] Iter: 23799 | Loss: 0.2353 | Accuracy: 0.995850 =====
+=====[Train] Iter: 23899 | Loss: 0.2358 | Accuracy: 0.991699 =====
+=====[Train] Iter: 23999 | Loss: 0.2377 | Accuracy: 0.998291 =====
+[Eval] Iter: 100 | Loss: 1.2932 | Acc: 0.79 | 2026-05-19 16:35:20.204812
+[Eval] Iter: 200 | Loss: 0.6121 | Acc: 0.97 | 2026-05-19 16:35:25.017391
+[Eval] Iter: 300 | Loss: 0.5566 | Acc: 0.96 | 2026-05-19 16:35:29.827220
+[Eval] Iter: 400 | Loss: 2.8692 | Acc: 0.47 | 2026-05-19 16:35:34.638262
+[Eval] Iter: 500 | Loss: 1.3489 | Acc: 0.85 | 2026-05-19 16:35:39.429362
+[Eval] Iter: 600 | Loss: 0.7710 | Acc: 0.96 | 2026-05-19 16:35:44.223870
+[Eval] Iter: 700 | Loss: 2.0370 | Acc: 0.71 | 2026-05-19 16:35:49.091284
+[Eval] Iter: 800 | Loss: 4.4033 | Acc: 0.49 | 2026-05-19 16:35:53.973291
+[Eval] Iter: 900 | Loss: 0.8258 | Acc: 0.91 | 2026-05-19 16:35:58.919117
+[Eval] Iter: 1000 | Loss: 0.6233 | Acc: 0.97 | 2026-05-19 16:36:03.732799
+[Eval] Iter: 1100 | Loss: 0.5413 | Acc: 0.96 | 2026-05-19 16:36:08.531672
+[Eval] Iter: 1200 | Loss: 0.4570 | Acc: 0.98 | 2026-05-19 16:36:13.338433
+[Eval] Iter: 1300 | Loss: 1.2955 | Acc: 0.89 | 2026-05-19 16:36:18.128627
+[Eval] Iter: 1400 | Loss: 0.8234 | Acc: 0.94 | 2026-05-19 16:36:22.913074
+[Eval] Iter: 1500 | Loss: 2.7249 | Acc: 0.81 | 2026-05-19 16:36:27.771567
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.815848 -----
+----- [class 1]  IoU: 0.848249 -----
+----- [class 2]  IoU: 0.774041 -----
+----- [class 3]  IoU: 0.858854 -----
+----- [class 4]  IoU: 0.750265 -----
+----- [class 5]  IoU: 0.686772 -----
+----- [class 6]  IoU: 0.845419 -----
+
+=====[VALID] Loss: 1.1031 | Mean IoU: 0.793933  =====
+*******************Model Saved*******************
+=====Best valid IoU Is: 0.793933 =====
+
+=====[Train] Iter: 24099 | Loss: 0.2882 | Accuracy: 0.984619 =====
+=====[Train] Iter: 24199 | Loss: 0.6444 | Accuracy: 0.946533 =====
+=====[Train] Iter: 24299 | Loss: 0.6545 | Accuracy: 0.949707 =====
+=====[Train] Iter: 24399 | Loss: 0.1469 | Accuracy: 0.994873 =====
+=====[Train] Iter: 24499 | Loss: 0.4028 | Accuracy: 0.982422 =====
+=====[Train] Iter: 24599 | Loss: 0.4752 | Accuracy: 0.911133 =====
+=====[Train] Iter: 24699 | Loss: 0.6371 | Accuracy: 0.951172 =====
+=====[Train] Iter: 24799 | Loss: 0.3336 | Accuracy: 0.977051 =====
+=====[Train] Iter: 24899 | Loss: 0.1562 | Accuracy: 0.990967 =====
+=====[Train] Iter: 24999 | Loss: 0.2872 | Accuracy: 0.972412 =====
+[Eval] Iter: 100 | Loss: 1.4495 | Acc: 0.79 | 2026-05-19 16:39:21.659700
+[Eval] Iter: 200 | Loss: 0.6116 | Acc: 0.96 | 2026-05-19 16:39:26.473870
+[Eval] Iter: 300 | Loss: 0.5348 | Acc: 0.96 | 2026-05-19 16:39:31.273572
+[Eval] Iter: 400 | Loss: 1.4498 | Acc: 0.76 | 2026-05-19 16:39:36.065220
+[Eval] Iter: 500 | Loss: 1.3247 | Acc: 0.83 | 2026-05-19 16:39:40.847845
+[Eval] Iter: 600 | Loss: 0.9593 | Acc: 0.95 | 2026-05-19 16:39:45.633647
+[Eval] Iter: 700 | Loss: 1.9589 | Acc: 0.76 | 2026-05-19 16:39:50.413760
+[Eval] Iter: 800 | Loss: 4.2418 | Acc: 0.41 | 2026-05-19 16:39:55.202502
+[Eval] Iter: 900 | Loss: 0.7405 | Acc: 0.92 | 2026-05-19 16:39:59.988792
+[Eval] Iter: 1000 | Loss: 0.6030 | Acc: 0.97 | 2026-05-19 16:40:04.774064
+[Eval] Iter: 1100 | Loss: 0.5599 | Acc: 0.96 | 2026-05-19 16:40:09.597892
+[Eval] Iter: 1200 | Loss: 0.4822 | Acc: 0.98 | 2026-05-19 16:40:14.386190
+[Eval] Iter: 1300 | Loss: 1.1748 | Acc: 0.90 | 2026-05-19 16:40:19.175958
+[Eval] Iter: 1400 | Loss: 0.7154 | Acc: 0.95 | 2026-05-19 16:40:23.963108
+[Eval] Iter: 1500 | Loss: 2.5224 | Acc: 0.81 | 2026-05-19 16:40:28.768747
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.812476 -----
+----- [class 1]  IoU: 0.813742 -----
+----- [class 2]  IoU: 0.776544 -----
+----- [class 3]  IoU: 0.839872 -----
+----- [class 4]  IoU: 0.736138 -----
+----- [class 5]  IoU: 0.663884 -----
+----- [class 6]  IoU: 0.833666 -----
+
+=====[VALID] Loss: 1.1198 | Mean IoU: 0.777308  =====
+=====Best valid IoU Is: 0.793933 =====
+
+=====[Train] Iter: 25099 | Loss: 0.4119 | Accuracy: 0.967285 =====
+=====[Train] Iter: 25199 | Loss: 0.1677 | Accuracy: 0.989746 =====
+=====[Train] Iter: 25299 | Loss: 0.2404 | Accuracy: 0.978516 =====
+=====[Train] Iter: 25399 | Loss: 0.3326 | Accuracy: 0.981201 =====
+=====[Train] Iter: 25499 | Loss: 0.6463 | Accuracy: 0.935303 =====
+=====[Train] Iter: 25599 | Loss: 0.2016 | Accuracy: 0.990723 =====
+=====[Train] Iter: 25699 | Loss: 0.2157 | Accuracy: 0.987305 =====
+=====[Train] Iter: 25799 | Loss: 0.4990 | Accuracy: 0.964600 =====
+=====[Train] Iter: 25899 | Loss: 0.9023 | Accuracy: 0.878906 =====
+=====[Train] Iter: 25999 | Loss: 0.1451 | Accuracy: 0.999023 =====
+[Eval] Iter: 100 | Loss: 1.3541 | Acc: 0.77 | 2026-05-19 16:43:22.734524
+[Eval] Iter: 200 | Loss: 0.6187 | Acc: 0.96 | 2026-05-19 16:43:27.633008
+[Eval] Iter: 300 | Loss: 0.5599 | Acc: 0.96 | 2026-05-19 16:43:32.532900
+[Eval] Iter: 400 | Loss: 1.5261 | Acc: 0.73 | 2026-05-19 16:43:37.347939
+[Eval] Iter: 500 | Loss: 1.3083 | Acc: 0.85 | 2026-05-19 16:43:42.149049
+[Eval] Iter: 600 | Loss: 0.8650 | Acc: 0.96 | 2026-05-19 16:43:46.937242
+[Eval] Iter: 700 | Loss: 1.9419 | Acc: 0.77 | 2026-05-19 16:43:51.722748
+[Eval] Iter: 800 | Loss: 5.3282 | Acc: 0.42 | 2026-05-19 16:43:56.517567
+[Eval] Iter: 900 | Loss: 0.8133 | Acc: 0.91 | 2026-05-19 16:44:01.321967
+[Eval] Iter: 1000 | Loss: 0.5952 | Acc: 0.97 | 2026-05-19 16:44:06.112456
+[Eval] Iter: 1100 | Loss: 0.5679 | Acc: 0.94 | 2026-05-19 16:44:10.909785
+[Eval] Iter: 1200 | Loss: 0.4550 | Acc: 0.98 | 2026-05-19 16:44:15.718176
+[Eval] Iter: 1300 | Loss: 1.1536 | Acc: 0.90 | 2026-05-19 16:44:20.525636
+[Eval] Iter: 1400 | Loss: 0.8927 | Acc: 0.91 | 2026-05-19 16:44:25.306164
+[Eval] Iter: 1500 | Loss: 2.7096 | Acc: 0.80 | 2026-05-19 16:44:30.104573
+*****Test Classes: [6, 1, 9, 7, 2, 5]*****
+----- [class 0]  IoU: 0.813111 -----
+----- [class 1]  IoU: 0.837319 -----
+----- [class 2]  IoU: 0.772212 -----
+----- [class 3]  IoU: 0.844923 -----
+----- [class 4]  IoU: 0.749552 -----
+----- [class 5]  IoU: 0.681766 -----
+----- [class 6]  IoU: 0.832120 -----
+
+=====[VALID] Loss: 1.1272 | Mean IoU: 0.786315  =====
+=====Best valid IoU Is: 0.793933 =====
+
+=====[Train] Iter: 26099 | Loss: 0.2308 | Accuracy: 0.975830 =====
+=====[Train] Iter: 26199 | Loss: 0.3546 | Accuracy: 0.982910 =====
+=====[Train] Iter: 26299 | Loss: 0.3953 | Accuracy: 0.949951 =====
+=====[Train] Iter: 26399 | Loss: 0.3835 | Accuracy: 0.969971 =====
+=====[Train] Iter: 26499 | Loss: 0.5198 | Accuracy: 0.965576 =====
+=====[Train] Iter: 26599 | Loss: 0.5252 | Accuracy: 0.958252 =====
+=====[Train] Iter: 26699 | Loss: 0.4035 | Accuracy: 0.967773 =====
+=====[Train] Iter: 26799 | Loss: 0.5003 | Accuracy: 0.957275 =====
+=====[Train] Iter: 26899 | Loss: 0.3454 | Accuracy: 0.979492 =====
+=====[Train] Iter: 26999 | Loss: 0.2377 | Accuracy: 0.989014 =====
+[Eval] Iter: 100 | Loss: 1.4255 | Acc: 0.78 | 2026-05-19 16:47:24.052994
+[Eval] Iter: 200 | Loss: 0.6940 | Acc: 0.94 | 2026-05-19 16:47:28.896903
+[Eval] Iter: 300 | Loss: 0.5227 | Acc: 0.97 | 2026-05-19 16:47:33.695084
+[Eval] Iter: 400 | Loss: 0.9314 | Acc: 0.93 | 2026-05-19 16:47:38.483335
+[Eval] Iter: 500 | Loss: 1.0787 | Acc: 0.87 | 2026-05-19 16:47:43.268291
+[Eval] Iter: 600 | Loss: 0.8674 | Acc: 0.95 | 2026-05-19 16:47:48.054912
+[Eval] Iter: 700 | Loss: 1.7426 | Acc: 0.77 | 2026-05-19 16:47:52.851845
+[Eval] Iter: 800 | Loss: 5.3260 | Acc: 0.45 | 2026-05-19 16:47:57.636275
+[Eval] Iter: 900 | Loss: 0.7551 | Acc: 0.91 | 2026-05-19 16:48:02.439192
+[Eval] Iter: 1000 | Loss: 0.6942 | Acc: 0.97 | 2026-05-19 16:48:07.230917
+[Eval] Iter: 1100 | Loss: 0.6097 | Acc: 0.94 | 2026-05-19 16:48:12.185063
+[Eval] Iter: 1200 | Loss: 0.4734 | Acc: 0.98 | 2026-05-19 16:48:17.054768
